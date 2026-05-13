@@ -6,6 +6,7 @@ import requests
 from pathlib import Path
 
 from telegram import Update, LabeledPrice
+from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
     MessageHandler,
@@ -227,7 +228,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     free_used, paid_credits = get_user(user_id)
 
-    if free_used >= 2 and paid_credits <= 0:
+    if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
             "💳 Бесплатная генерация закончилась.\n\n"
 "Чтобы создать ещё видео, напиши /buy и купи 1 генерацию."
