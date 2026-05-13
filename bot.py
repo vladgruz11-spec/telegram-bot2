@@ -5,11 +5,11 @@ import sqlite3
 import requests
 from pathlib import Path
 
-from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
     MessageHandler,
+    PreCheckoutQueryHandler,
     ContextTypes,
     filters,
 )
@@ -28,7 +28,26 @@ MEDIA_DIR.mkdir(exist_ok=True)
 
 DB_PATH = "users.db"
 user_states = {}
+def add_paid_credit(user_id: int, amount: int = 1):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET paid_credits = paid_credits + ? WHERE user_id = ?",
+        (amount, user_id)
+    )
+    conn.commit()
+    conn.close()
 
+
+def decrement_paid_credit(user_id: int):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET paid_credits = paid_credits - 1 WHERE user_id = ? AND paid_credits > 0",
+        (user_id,)
+    )
+    conn.commit()
+    conn.close()
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -210,8 +229,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if free_used >= 2 and paid_credits <= 0:
         await update.message.reply_text(
-            "💳 Бесплатные генерации закончились.\n\n"
-            "Следующим этапом подключим оплату."
+            "💳 Бесплатная генерация закончилась.\n\n"
+"Чтобы создать ещё видео, напиши /buy и купи 1 генерацию."
         )
         return
 
@@ -261,7 +280,10 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="✅ Готово! Вот твоё AI-видео."
         )
 
-        increment_free_used(user_id)
+        if free_used < 1:
+    increment_free_used(user_id)
+else:
+    decrement_paid_credit(user_id)
 
         free_used_after, _ = get_user(user_id)
         free_left = max(0, 1 - free_used_after)
@@ -277,6 +299,34 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_states.pop(user_id, None)
 
+async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    prices = [LabeledPrice("1 AI-видео", 50)]
+
+    await update.message.reply_invoice(
+        title="1 AI-видео",
+        description="Оплата одной генерации AI-видео",
+        payload=f"video_generation_{update.message.from_user.id}",
+        provider_token="",
+        currency="XTR",
+        prices=prices,
+    )
+
+
+async def precheckout_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.pre_checkout_query
+    await query.answer(ok=True)
+
+
+async def successful_payment_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user.id
+
+    add_paid_credit(user_id, 1)
+
+    await update.message.reply_text(
+        "✅ Оплата прошла успешно!\n\n"
+        "Тебе добавлена 1 платная генерация.\n\n"
+        "Теперь отправь картинку."
+    )
 
 def main():
     init_db()
@@ -284,6 +334,10 @@ def main():
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
+from telegram.ext import PreCheckoutQueryHandler
+app.add_handler(CommandHandler("buy", buy))
+app.add_handler(PreCheckoutQueryHandler(precheckout_callback))
+app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
@@ -291,5 +345,5 @@ def main():
     app.run_polling()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":    
     main()
