@@ -89,7 +89,7 @@ def upload_image_to_kie(image_path: str) -> str:
             "fileName": Path(image_path).name
         }
 
-        response = requests.post(url, headers=headers, files=files, data=data, timeout=120)
+        response = requests.post(url, headers=headers, files=files, data=data, timeout=600)
 
     response.raise_for_status()
     result = response.json()
