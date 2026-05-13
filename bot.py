@@ -5,7 +5,7 @@ import sqlite3
 import requests
 from pathlib import Path
 
-from telegram.ext import (
+from telegram import Update, LabeledPrice
     ApplicationBuilder,
     CommandHandler,
     MessageHandler,
