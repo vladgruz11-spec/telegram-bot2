@@ -130,7 +130,7 @@ def create_kie_video_task(image_url: str, prompt: str) -> str:
     }
 
     payload = {
-        "model": "wan/2-6-flash-image-to-video",
+        "model": "wan/2-6-image-to-video",
         "input": {
             "prompt": prompt,
             "image_urls": [image_url],
