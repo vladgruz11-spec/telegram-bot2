@@ -281,9 +281,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
         if free_used < 1:
-    increment_free_used(user_id)
-else:
-    decrement_paid_credit(user_id)
+            increment_free_used(user_id)
+        else:
+            decrement_paid_credit(user_id)
 
         free_used_after, _ = get_user(user_id)
         free_left = max(0, 1 - free_used_after)
