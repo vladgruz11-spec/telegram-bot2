@@ -198,7 +198,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🎬 Привет! Я Tarantino 2.0\n\n"
         "Я могу сделать AI-видео из картинки и описания.\n\n"
-        "У тебя есть 2 бесплатные генерации.\n\n"
+        "У тебя есть 1 бесплатные генерации.\n\n"
         "Шаг 1: отправь мне картинку."
     )
 
@@ -239,7 +239,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     free_used, paid_credits = get_user(user_id)
 
-    if free_used >= 2 and paid_credits <= 0:
+    if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
             "💳 Бесплатные генерации закончились.\n\n"
             "Следующим этапом подключим оплату."
@@ -264,7 +264,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         increment_free_used(user_id)
 
         free_used_after, _ = get_user(user_id)
-        free_left = max(0, 2 - free_used_after)
+        free_left = max(0, 1 - free_used_after)
 
         await update.message.reply_text(
             f"Осталось бесплатных генераций: {free_left}"
