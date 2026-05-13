@@ -1,5 +1,8 @@
 import os
+import json
+import time
 import sqlite3
+import requests
 from pathlib import Path
 
 from telegram import Update
@@ -11,16 +14,19 @@ from telegram.ext import (
     filters,
 )
 
-TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+KIE_API_KEY = os.getenv("KIE_API_KEY")
 
-if not TOKEN:
+if not TELEGRAM_TOKEN:
     raise RuntimeError("TELEGRAM_TOKEN не найден!")
+
+if not KIE_API_KEY:
+    raise RuntimeError("KIE_API_KEY не найден!")
 
 MEDIA_DIR = Path("media")
 MEDIA_DIR.mkdir(exist_ok=True)
 
 DB_PATH = "users.db"
-
 user_states = {}
 
 
@@ -62,12 +68,130 @@ def get_user(user_id: int):
 def increment_free_used(user_id: int):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    cur.execute(
-        "UPDATE users SET free_used = free_used + 1 WHERE user_id = ?",
-        (user_id,)
-    )
+    cur.execute("UPDATE users SET free_used = free_used + 1 WHERE user_id = ?", (user_id,))
     conn.commit()
     conn.close()
+
+
+def upload_image_to_kie(image_path: str) -> str:
+    url = "https://kieai.redpandaai.co/api/file-stream-upload"
+
+    headers = {
+        "Authorization": f"Bearer {KIE_API_KEY}"
+    }
+
+    with open(image_path, "rb") as f:
+        files = {
+            "file": (Path(image_path).name, f, "image/jpeg")
+        }
+        data = {
+            "uploadPath": "images/tarantino-bot",
+            "fileName": Path(image_path).name
+        }
+
+        response = requests.post(url, headers=headers, files=files, data=data, timeout=120)
+
+    response.raise_for_status()
+    result = response.json()
+
+    if not result.get("success"):
+        raise RuntimeError(f"Ошибка загрузки картинки в Kie: {result}")
+
+    download_url = result["data"]["downloadUrl"]
+    return download_url
+
+
+def create_kie_video_task(image_url: str, prompt: str) -> str:
+    url = "https://api.kie.ai/api/v1/jobs/createTask"
+
+    headers = {
+        "Authorization": f"Bearer {KIE_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "model": "wan/2-6-image-to-video",
+        "input": {
+            "prompt": prompt,
+            "image_urls": [image_url],
+            "duration": "5",
+            "resolution": "720p",
+            "nsfw_checker": False
+        }
+    }
+
+    response = requests.post(url, headers=headers, json=payload, timeout=120)
+    response.raise_for_status()
+    result = response.json()
+
+    if result.get("code") != 200:
+        raise RuntimeError(f"Ошибка создания видео-задачи Kie: {result}")
+
+    return result["data"]["taskId"]
+
+
+def wait_kie_video_result(task_id: str) -> str:
+    url = "https://api.kie.ai/api/v1/jobs/recordInfo"
+
+    headers = {
+        "Authorization": f"Bearer {KIE_API_KEY}"
+    }
+
+    for _ in range(60):
+        response = requests.get(
+            url,
+            headers=headers,
+            params={"taskId": task_id},
+            timeout=60
+        )
+        response.raise_for_status()
+        result = response.json()
+
+        data = result.get("data", {})
+        state = data.get("state")
+
+        if state == "success":
+            result_json_raw = data.get("resultJson")
+            result_json = json.loads(result_json_raw)
+
+            video_urls = (
+                result_json.get("resultUrls")
+                or result_json.get("videoUrls")
+                or result_json.get("videos")
+                or []
+            )
+
+            if not video_urls:
+                raise RuntimeError(f"Видео готово, но ссылка не найдена: {result_json}")
+
+            return video_urls[0]
+
+        if state == "fail":
+            raise RuntimeError(f"Kie не смог сгенерировать видео: {data.get('failMsg')}")
+
+        time.sleep(10)
+
+    raise RuntimeError("Видео генерировалось слишком долго. Попробуй позже.")
+
+
+def download_video(video_url: str, user_id: int) -> str:
+    video_path = MEDIA_DIR / f"{user_id}_result.mp4"
+
+    response = requests.get(video_url, timeout=180)
+    response.raise_for_status()
+
+    with open(video_path, "wb") as f:
+        f.write(response.content)
+
+    return str(video_path)
+
+
+def generate_video_from_image(image_path: str, prompt: str, user_id: int) -> str:
+    image_url = upload_image_to_kie(image_path)
+    task_id = create_kie_video_task(image_url, prompt)
+    video_url = wait_kie_video_result(task_id)
+    video_path = download_video(video_url, user_id)
+    return video_path
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -87,7 +211,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if free_used >= 2 and paid_credits <= 0:
         await update.message.reply_text(
             "💳 Бесплатные генерации закончились.\n\n"
-            "Следующим этапом мы подключим оплату, и здесь будет кнопка оплаты."
+            "Следующим этапом подключим оплату."
         )
         return
 
@@ -97,26 +221,20 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     image_path = MEDIA_DIR / f"{user_id}.jpg"
     await file.download_to_drive(str(image_path))
 
-    user_states[user_id] = {
-        "image_path": str(image_path)
-    }
+    user_states[user_id] = {"image_path": str(image_path)}
 
     await update.message.reply_text(
         "✅ Картинку получил.\n\n"
-        "Теперь отправь описание видео.\n\n"
-        "Например:\n"
-        "Сделай кинематографичное видео, девушка идет по ночному Токио под дождём."
+        "Теперь отправь описание видео."
     )
 
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
-    text = update.message.text
+    prompt = update.message.text
 
     if user_id not in user_states:
-        await update.message.reply_text(
-            "Сначала отправь картинку, потом описание."
-        )
+        await update.message.reply_text("Сначала отправь картинку, потом описание.")
         return
 
     free_used, paid_credits = get_user(user_id)
@@ -131,23 +249,31 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     image_path = user_states[user_id]["image_path"]
 
     await update.message.reply_text(
-        "🎥 Отлично!\n\n"
-        "Я получил:\n"
-        f"🖼 Картинку: {image_path}\n"
-        f"📝 Описание: {text}\n\n"
-        "Сейчас здесь будет запуск нейросети для генерации видео.\n\n"
-        "Пока это тестовый режим."
+        "🎥 Запускаю нейросеть.\n\n"
+        "Генерация видео может занять 2–10 минут. Не отправляй новую картинку, пока я работаю."
     )
 
-    increment_free_used(user_id)
+    try:
+        video_path = generate_video_from_image(image_path, prompt, user_id)
 
-    free_used_after, paid_credits_after = get_user(user_id)
-    free_left = max(0, 2 - free_used_after)
+        await update.message.reply_video(
+            video=open(video_path, "rb"),
+            caption="✅ Готово! Вот твоё AI-видео."
+        )
 
-    await update.message.reply_text(
-        f"✅ Тестовая генерация засчитана.\n\n"
-        f"Осталось бесплатных генераций: {free_left}"
-    )
+        increment_free_used(user_id)
+
+        free_used_after, _ = get_user(user_id)
+        free_left = max(0, 2 - free_used_after)
+
+        await update.message.reply_text(
+            f"Осталось бесплатных генераций: {free_left}"
+        )
+
+    except Exception as e:
+        await update.message.reply_text(
+            f"❌ Ошибка генерации видео:\n\n{e}"
+        )
 
     user_states.pop(user_id, None)
 
@@ -155,7 +281,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def main():
     init_db()
 
-    app = ApplicationBuilder().token(TOKEN).build()
+    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
