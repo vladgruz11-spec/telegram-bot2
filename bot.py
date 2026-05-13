@@ -218,7 +218,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     photo = update.message.photo[-1]
     file = await context.bot.get_file(photo.file_id)
 
-    image_path = MEDIA_DIR / f"{user_id}.jpg"
+    image_path = MEDIA_DIR / f"{user_id}_{photo.file_unique_id}.jpg"
     await file.download_to_drive(str(image_path))
 
     user_states[user_id] = {"image_path": str(image_path)}
