@@ -140,7 +140,7 @@ def create_kie_video_task(image_url: str, prompt: str) -> str:
         }
     }
 
-    response = requests.post(url, headers=headers, json=payload, timeout=120)
+    response = requests.post(url, headers=headers, json=payload, timeout=600)
     response.raise_for_status()
     result = response.json()
 
@@ -157,12 +157,12 @@ def wait_kie_video_result(task_id: str) -> str:
         "Authorization": f"Bearer {KIE_API_KEY}"
     }
 
-    for _ in range(60):
+    for _ in range(600):
         response = requests.get(
             url,
             headers=headers,
             params={"taskId": task_id},
-            timeout=60
+            timeout=600
         )
         response.raise_for_status()
         result = response.json()
