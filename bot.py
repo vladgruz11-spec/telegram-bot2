@@ -216,9 +216,9 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int) -> str
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "🎬 Привет! Я Tarantino 2.0\n\n"
-        "Я могу сделать AI-видео из картинки и описания.\n\n"
-        "У тебя есть 1 бесплатные генерации.\n\n"
+        "Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять!\n\n"
+        "Если бота заблокируют, там ты всегда найдешь актуальную ссылку на него!\n\n"
+        "Тебе доступна 1 бесплатная (пробная) генерация!\n\n"
         "Шаг 1: отправь мне картинку."
     )
 
