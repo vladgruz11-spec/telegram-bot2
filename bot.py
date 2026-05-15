@@ -216,9 +216,8 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int) -> str
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять!\n\n"
-        "Если бота заблокируют, там ты всегда найдешь актуальную ссылку на него!\n\n"
-        "Тебе доступна 1 бесплатная (пробная) генерация!\n\n"
+        "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
+        "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО\n\n"
         "Шаг 1: отправь мне картинку."
     )
 
