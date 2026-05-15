@@ -230,7 +230,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
             "💳 Бесплатная генерация закончилась.\n\n"
-"Чтобы создать ещё видео, напиши /buy и купи 1 генерацию."
+"Чтобы создавать больше видео, необходимо оплатить генерации. Жми /buy"
+"Так же БЕСПЛАТНЫЕ генерации можно получать, рекомендуя нас друзьям! Жми /ref"
         )
         return
 
