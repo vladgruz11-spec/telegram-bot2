@@ -27,7 +27,7 @@ if not KIE_API_KEY:
 MEDIA_DIR = Path("media")
 MEDIA_DIR.mkdir(exist_ok=True)
 
-DB_PATH = "users.db"
+DB_PATH = "/var/data/users.db"
 user_states = {}
 def add_paid_credit(user_id: int, amount: int = 1):
     conn = sqlite3.connect(DB_PATH)
