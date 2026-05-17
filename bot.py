@@ -263,7 +263,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
             "💳 Бесплатные генерации закончились.\n\n"
-            "Следующим этапом подключим оплату!!!"
+            "Следующим этапом подключим оплату!"
         )
         return
 
