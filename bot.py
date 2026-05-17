@@ -197,7 +197,7 @@ def wait_kie_video_result(task_id: str) -> str:
 def download_video(video_url: str, user_id: int) -> str:
     video_path = MEDIA_DIR / f"{user_id}_result.mp4"
 
-    response = requests.get(video_url, timeout=180)
+    response = requests.get(video_url, timeout=600)
     response.raise_for_status()
 
     with open(video_path, "wb") as f:
