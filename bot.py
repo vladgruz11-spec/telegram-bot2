@@ -109,7 +109,7 @@ def upload_image_to_kie(image_path: str) -> str:
             "fileName": Path(image_path).name
         }
 
-        response = requests.post(url, headers=headers, files=files, data=data, timeout=600)
+        response = requests.post(url, headers=headers, files=files, data=data, timeout=3600)
 
     response.raise_for_status()
     result = response.json()
@@ -140,7 +140,7 @@ def create_kie_video_task(image_url: str, prompt: str) -> str:
         }
     }
 
-    response = requests.post(url, headers=headers, json=payload, timeout=600)
+    response = requests.post(url, headers=headers, json=payload, timeout=3600)
     response.raise_for_status()
     result = response.json()
 
@@ -157,12 +157,12 @@ def wait_kie_video_result(task_id: str) -> str:
         "Authorization": f"Bearer {KIE_API_KEY}"
     }
 
-    for _ in range(600):
+    for _ in range(3600):
         response = requests.get(
             url,
             headers=headers,
             params={"taskId": task_id},
-            timeout=600
+            timeout=3600
         )
         response.raise_for_status()
         result = response.json()
@@ -197,7 +197,7 @@ def wait_kie_video_result(task_id: str) -> str:
 def download_video(video_url: str, user_id: int) -> str:
     video_path = MEDIA_DIR / f"{user_id}_result.mp4"
 
-    response = requests.get(video_url, timeout=600)
+    response = requests.get(video_url, timeout=3600)
     response.raise_for_status()
 
     with open(video_path, "wb") as f:
