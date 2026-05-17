@@ -243,7 +243,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     free_used, paid_credits = get_user(user_id)
 
     if free_used >= 1 and paid_credits <= 0:
-                await update.message.reply_text(
+        await update.message.reply_text(
             "💳 Бесплатные генерации закончились.",
             reply_markup=paid_menu()
         )
@@ -266,7 +266,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     prompt = update.message.text
-        if prompt == "💳 Купить генерации: /buy":
+
+    if prompt == "💳 Купить генерации: /buy":
         await buy(update, context)
         return
 
