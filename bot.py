@@ -5,7 +5,7 @@ import sqlite3
 import requests
 from pathlib import Path
 
-from telegram import Update, LabeledPrice
+from telegram import Update, LabeledPrice, ReplyKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
@@ -29,6 +29,20 @@ MEDIA_DIR.mkdir(exist_ok=True)
 
 DB_PATH = "/var/data/users.db"
 user_states = {}
+def paid_menu():
+    keyboard = [
+        ["💳 Купить генерации: /buy"],
+        ["🎁 БЕСПЛАТНЫЕ генерации: /ref"],
+        ["🚀 Запустить бота"],
+        ["📘 Как пользоваться ботом: /help"],
+        ["👤 Мой баланс: /profile"],
+        ["🆘 Связаться с поддержкой"]
+    ]
+
+    return ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True
+    )
 def add_paid_credit(user_id: int, amount: int = 1):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -229,10 +243,9 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     free_used, paid_credits = get_user(user_id)
 
     if free_used >= 1 and paid_credits <= 0:
-        await update.message.reply_text(
-            "💳 Бесплатная генерация закончилась.\n\n"
-            "Чтобы создавать больше видео, необходимо оплатить генерации. Жми /buy\n\n"
-            "Так же БЕСПЛАТНЫЕ генерации можно получать, рекомендуя нас друзьям! Жми /ref\n\n"
+                await update.message.reply_text(
+            "💳 Бесплатные генерации закончились.",
+            reply_markup=paid_menu()
         )
         return
 
@@ -253,6 +266,41 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     prompt = update.message.text
+        if prompt == "💳 Купить генерации: /buy":
+        await buy(update, context)
+        return
+
+    if prompt == "🎁 БЕСПЛАТНЫЕ генерации: /ref":
+        await update.message.reply_text("🎁 Реферальную программу подключим следующим этапом.")
+        return
+
+    if prompt == "🚀 Запустить бота":
+        await start(update, context)
+        return
+
+    if prompt == "📘 Как пользоваться ботом: /help":
+        await update.message.reply_text(
+            "📘 Как пользоваться ботом:\n\n"
+            "1. Отправь картинку.\n"
+            "2. Напиши описание видео.\n"
+            "3. Дождись готового AI-видео."
+        )
+        return
+
+    if prompt == "👤 Мой баланс: /profile":
+        free_used, paid_credits = get_user(user_id)
+        free_left = max(0, 1 - free_used)
+
+        await update.message.reply_text(
+            f"👤 Твой баланс:\n\n"
+            f"Бесплатных генераций: {free_left}\n"
+            f"Платных генераций: {paid_credits}"
+        )
+        return
+
+    if prompt == "🆘 Связаться с поддержкой":
+        await update.message.reply_text("🆘 Поддержка: @ТВОЙ_SUPPORT_USERNAME")
+        return
 
     if user_id not in user_states:
         await update.message.reply_text("Сначала отправь картинку, потом описание.")
@@ -262,8 +310,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
-            "💳 Бесплатные генерации закончились.\n\n"
-            "Следующим этапом подключим оплату!"
+            "💳 Бесплатные генерации закончились.",
+            reply_markup=paid_menu()
         )
         return
 
