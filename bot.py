@@ -328,13 +328,16 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return
 
     if user_id not in user_states:
-        if "duration" not in user_states[user_id]:
-            await update.message.reply_text(
+        await update.message.reply_text(
+            "Сначала отправь картинку."
+        )
+        return
+
+    if "duration" not in user_states[user_id]:
+        await update.message.reply_text(
             "Сначала выбери длительность видео:",
             reply_markup=duration_menu()
         )
-        return
-        await update.message.reply_text("Сначала отправь картинку, потом описание.")
         return
 
     free_used, paid_credits = get_user(user_id)
