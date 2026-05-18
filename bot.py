@@ -30,12 +30,10 @@ MEDIA_DIR.mkdir(exist_ok=True)
 DB_PATH = "/var/data/users.db"
 user_states = {}
 VIDEO_PRICES = {
-    "5": 50,
-    "10": 90,
-    "15": 130,
+    "5": 99,
+    "10": 155,
+    "15": 219,
 }
-
-TOPUP_AMOUNTS = [100, 250, 500]
 def paid_menu():
     keyboard = [
         ["💳 Купить генерации: /buy"],
@@ -62,9 +60,9 @@ def duration_menu():
     )
 def topup_menu():
     keyboard = [
-        ["⭐ Пополнить 100 Stars"],
-        ["⭐ Пополнить 250 Stars"],
-        ["⭐ Пополнить 500 Stars"],
+        ["💳 Пополнить баланс на 199 ₽"],
+        ["💳 Пополнить баланс на 399 ₽"],
+        ["💳 Пополнить баланс на 699 ₽"],
         ["🚀 Запустить бота"]
     ]
 
@@ -302,19 +300,10 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await buy(update, context)
         return
 
-    if prompt.startswith("⭐ Пополнить "):
-        amount_text = prompt.replace("⭐ Пополнить ", "").replace(" Stars", "")
-        amount = int(amount_text)
-
-        prices = [LabeledPrice(f"Пополнение баланса на {amount} Stars", amount)]
-
-        await update.message.reply_invoice(
-            title=f"Пополнение баланса на {amount} Stars",
-            description=f"На баланс бота будет зачислено {amount} Stars.",
-            payload=f"topup_{amount}",
-            provider_token="",
-            currency="XTR",
-            prices=prices,
+    if prompt.startswith("💳 Пополнить баланс на "):
+        await update.message.reply_text(
+            "💳 Оплата через ЮKassa скоро будет подключена.\n\n"
+            "Сейчас это меню нужно для проверки магазина."
         )
         return
 
@@ -343,11 +332,11 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             f"👤 Твой баланс:\n\n"
             f"Бесплатных генераций: {free_left}\n"
-            f"Баланс Stars: {paid_credits}\n\n"
+            f"Баланс: {paid_credits} ₽\n\n"
             f"Стоимость:\n"
-            f"5 секунд — {VIDEO_PRICES['5']} Stars\n"
-            f"10 секунд — {VIDEO_PRICES['10']} Stars\n"
-            f"15 секунд — {VIDEO_PRICES['15']} Stars"
+            f"5 секунд — {VIDEO_PRICES['5']} ₽\n"
+            f"10 секунд — {VIDEO_PRICES['10']} ₽\n"
+            f"15 секунд — {VIDEO_PRICES['15']} ₽"
         )
         return
 
@@ -388,8 +377,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if free_used >= 1 and paid_credits < video_cost:
         await update.message.reply_text(
             f"💳 Бесплатные генерации закончились.\n\n"
-            f"Для ролика на {duration} сек нужно {video_cost} Stars.\n"
-            f"Твой баланс: {paid_credits} Stars.\n\n"
+            f"Для ролика на {duration} сек нужно {video_cost} ₽.\n"
+            f"Твой баланс: {paid_credits} ₽.\n\n"
             f"👇 Купить или получить БЕСПЛАТНО 👇",
             reply_markup=paid_menu()
         )
@@ -418,7 +407,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await update.message.reply_text(
             f"Осталось бесплатных генераций: {free_left}\n"
-            f"Баланс Stars: {paid_credits_after}"
+            f"Баланс: {paid_credits_after} ₽"
         )
 
     except Exception as e:
@@ -430,7 +419,12 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "💳 Выбери сумму пополнения баланса:",
+        "💳 Пополнение баланса:\n\n"
+        "Стоимость генераций:\n"
+        "5 секунд — 99 ₽\n"
+        "10 секунд — 155 ₽\n"
+        "15 секунд — 219 ₽\n\n"
+        "Выбери сумму пополнения:",
         reply_markup=topup_menu()
     )
 
@@ -451,8 +445,8 @@ async def successful_payment_callback(update: Update, context: ContextTypes.DEFA
         _, paid_credits = get_user(user_id)
 
         await update.message.reply_text(
-            f"✅ Баланс пополнен на {amount} Stars.\n\n"
-            f"Текущий баланс: {paid_credits} Stars.\n\n"
+            f"✅ Баланс пополнен на {amount} ₽.\n\n"
+            f"Текущий баланс: {paid_credits} ₽.\n\n"
             f"Теперь отправь картинку."
         )
 
