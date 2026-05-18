@@ -277,6 +277,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
+    prompt = update.message.text
+
     if prompt in ["5 секунд", "10 секунд", "15 секунд", "20 секунд"]:
         if user_id not in user_states:
             await update.message.reply_text("Сначала отправь картинку.")
@@ -325,7 +327,6 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             disable_web_page_preview=True
         )
         return
-    return
 
     if user_id not in user_states:
         await update.message.reply_text(
