@@ -301,8 +301,11 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if prompt == "🆘 Связаться с поддержкой":
-        await update.message.reply_text("🆘 Поддержка: @ТВОЙ_SUPPORT_USERNAME")
-        return
+    await update.message.reply_text(
+        "🆘 Написать в поддержку: https://t.me/suppTarantino2",
+        disable_web_page_preview=True
+    )
+    return
 
     if user_id not in user_states:
         await update.message.reply_text("Сначала отправь картинку, потом описание.")
