@@ -29,6 +29,13 @@ MEDIA_DIR.mkdir(exist_ok=True)
 
 DB_PATH = "/var/data/users.db"
 user_states = {}
+VIDEO_PRICES = {
+    "5": 50,
+    "10": 90,
+    "15": 130,
+}
+
+TOPUP_AMOUNTS = [100, 250, 500]
 def paid_menu():
     keyboard = [
         ["💳 Купить генерации: /buy"],
@@ -53,6 +60,18 @@ def duration_menu():
         keyboard,
         resize_keyboard=True
     )
+def topup_menu():
+    keyboard = [
+        ["⭐ Пополнить 100 Stars"],
+        ["⭐ Пополнить 250 Stars"],
+        ["⭐ Пополнить 500 Stars"],
+        ["🚀 Запустить бота"]
+    ]
+
+    return ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True
+    )
 def add_paid_credit(user_id: int, amount: int = 1):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -64,12 +83,12 @@ def add_paid_credit(user_id: int, amount: int = 1):
     conn.close()
 
 
-def decrement_paid_credit(user_id: int):
+def decrement_paid_credit(user_id: int, amount: int):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     cur.execute(
-        "UPDATE users SET paid_credits = paid_credits - 1 WHERE user_id = ? AND paid_credits > 0",
-        (user_id,)
+        "UPDATE users SET paid_credits = paid_credits - ? WHERE user_id = ? AND paid_credits >= ?",
+        (amount, user_id, amount)
     )
     conn.commit()
     conn.close()
@@ -279,18 +298,24 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     prompt = update.message.text
 
-    if prompt in ["5 секунд", "10 секунд", "15 секунд"]:
-        if user_id not in user_states:
-            await update.message.reply_text("Сначала отправь картинку.")
-            return
-
-        user_states[user_id]["duration"] = prompt.replace(" секунд", "")
-
-        await update.message.reply_text("✍️ Теперь отправь описание видео.")
-        return
-
     if prompt == "💳 Купить генерации: /buy":
         await buy(update, context)
+        return
+
+    if prompt.startswith("⭐ Пополнить "):
+        amount_text = prompt.replace("⭐ Пополнить ", "").replace(" Stars", "")
+        amount = int(amount_text)
+
+        prices = [LabeledPrice(f"Пополнение баланса на {amount} Stars", amount)]
+
+        await update.message.reply_invoice(
+            title=f"Пополнение баланса на {amount} Stars",
+            description=f"На баланс бота будет зачислено {amount} Stars.",
+            payload=f"topup_{amount}",
+            provider_token="",
+            currency="XTR",
+            prices=prices,
+        )
         return
 
     if prompt == "🎁 БЕСПЛАТНЫЕ генерации: /ref":
@@ -305,8 +330,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             "📘 Как пользоваться ботом:\n\n"
             "1. Отправь картинку.\n"
-            "2. Напиши описание видео.\n"
-            "3. Дождись готового AI-видео."
+            "2. Выбери длительность видео.\n"
+            "3. Напиши описание видео.\n"
+            "4. Дождись готового AI-видео."
         )
         return
 
@@ -317,7 +343,11 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(
             f"👤 Твой баланс:\n\n"
             f"Бесплатных генераций: {free_left}\n"
-            f"Платных генераций: {paid_credits}"
+            f"Баланс Stars: {paid_credits}\n\n"
+            f"Стоимость:\n"
+            f"5 секунд — {VIDEO_PRICES['5']} Stars\n"
+            f"10 секунд — {VIDEO_PRICES['10']} Stars\n"
+            f"15 секунд — {VIDEO_PRICES['15']} Stars"
         )
         return
 
@@ -328,10 +358,18 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
+    if prompt in ["5 секунд", "10 секунд", "15 секунд"]:
+        if user_id not in user_states:
+            await update.message.reply_text("Сначала отправь картинку.")
+            return
+
+        user_states[user_id]["duration"] = prompt.replace(" секунд", "")
+
+        await update.message.reply_text("✍️ Теперь отправь описание видео.")
+        return
+
     if user_id not in user_states:
-        await update.message.reply_text(
-            "Сначала отправь картинку."
-        )
+        await update.message.reply_text("Сначала отправь картинку.")
         return
 
     if "duration" not in user_states[user_id]:
@@ -343,16 +381,19 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     free_used, paid_credits = get_user(user_id)
 
-    if free_used >= 1 and paid_credits <= 0:
+    image_path = user_states[user_id]["image_path"]
+    duration = user_states[user_id]["duration"]
+    video_cost = VIDEO_PRICES[duration]
+
+    if free_used >= 1 and paid_credits < video_cost:
         await update.message.reply_text(
-            "💳 Бесплатные генерации закончились.\n\n"
-            "👇 Купить или получить БЕСПЛАТНО 👇",
+            f"💳 Бесплатные генерации закончились.\n\n"
+            f"Для ролика на {duration} сек нужно {video_cost} Stars.\n"
+            f"Твой баланс: {paid_credits} Stars.\n\n"
+            f"👇 Купить или получить БЕСПЛАТНО 👇",
             reply_markup=paid_menu()
         )
         return
-
-    image_path = user_states[user_id]["image_path"]
-    duration = user_states[user_id]["duration"]
 
     await update.message.reply_text(
         "🎥 Запускаю нейросеть.\n\n"
@@ -370,13 +411,14 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if free_used < 1:
             increment_free_used(user_id)
         else:
-            decrement_paid_credit(user_id)
+            decrement_paid_credit(user_id, video_cost)
 
-        free_used_after, _ = get_user(user_id)
+        free_used_after, paid_credits_after = get_user(user_id)
         free_left = max(0, 1 - free_used_after)
 
         await update.message.reply_text(
-            f"Осталось бесплатных генераций: {free_left}"
+            f"Осталось бесплатных генераций: {free_left}\n"
+            f"Баланс Stars: {paid_credits_after}"
         )
 
     except Exception as e:
@@ -387,15 +429,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_states.pop(user_id, None)
 
 async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    prices = [LabeledPrice("1 AI-видео", 50)]
-
-    await update.message.reply_invoice(
-        title="1 AI-видео",
-        description="Оплата одной генерации AI-видео",
-        payload=f"video_generation_{update.message.from_user.id}",
-        provider_token="",
-        currency="XTR",
-        prices=prices,
+    await update.message.reply_text(
+        "💳 Выбери сумму пополнения баланса:",
+        reply_markup=topup_menu()
     )
 
 
@@ -406,14 +442,19 @@ async def precheckout_callback(update: Update, context: ContextTypes.DEFAULT_TYP
 
 async def successful_payment_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
+    payload = update.message.successful_payment.invoice_payload
 
-    add_paid_credit(user_id, 1)
+    if payload.startswith("topup_"):
+        amount = int(payload.replace("topup_", ""))
+        add_paid_credit(user_id, amount)
 
-    await update.message.reply_text(
-        "✅ Оплата прошла успешно!\n\n"
-        "Тебе добавлена 1 платная генерация.\n\n"
-        "Теперь отправь картинку."
-    )
+        _, paid_credits = get_user(user_id)
+
+        await update.message.reply_text(
+            f"✅ Баланс пополнен на {amount} Stars.\n\n"
+            f"Текущий баланс: {paid_credits} Stars.\n\n"
+            f"Теперь отправь картинку."
+        )
 
 def main():
     init_db()
