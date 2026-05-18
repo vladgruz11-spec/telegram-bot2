@@ -43,6 +43,16 @@ def paid_menu():
         keyboard,
         resize_keyboard=True
     )
+def duration_menu():
+    keyboard = [
+        ["5 секунд", "10 секунд"],
+        ["15 секунд", "20 секунд"]
+    ]
+
+    return ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True
+    )
 def add_paid_credit(user_id: int, amount: int = 1):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -135,7 +145,7 @@ def upload_image_to_kie(image_path: str) -> str:
     return download_url
 
 
-def create_kie_video_task(image_url: str, prompt: str) -> str:
+def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     url = "https://api.kie.ai/api/v1/jobs/createTask"
 
     headers = {
@@ -148,7 +158,7 @@ def create_kie_video_task(image_url: str, prompt: str) -> str:
         "input": {
             "prompt": prompt,
             "image_urls": [image_url],
-            "duration": "5",
+            "duration": duration,
             "resolution": "720p",
             "nsfw_checker": False
         }
@@ -220,9 +230,9 @@ def download_video(video_url: str, user_id: int) -> str:
     return str(video_path)
 
 
-def generate_video_from_image(image_path: str, prompt: str, user_id: int) -> str:
+def generate_video_from_image(image_path: str, prompt: str, user_id: int, duration: str) -> str:
     image_url = upload_image_to_kie(image_path)
-    task_id = create_kie_video_task(image_url, prompt)
+    task_id = create_kie_video_task(image_url, prompt, duration)
     video_url = wait_kie_video_result(task_id)
     video_path = download_video(video_url, user_id)
     return video_path
@@ -260,13 +270,22 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         "✅ Картинку получил.\n\n"
-        "Теперь отправь описание видео."
+        "Выбери длительность видео:",
+        reply_markup=duration_menu()
     )
 
 
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
-    prompt = update.message.text
+    if prompt in ["5 секунд", "10 секунд", "15 секунд", "20 секунд"]:
+        if user_id not in user_states:
+            await update.message.reply_text("Сначала отправь картинку.")
+            return
+
+        user_states[user_id]["duration"] = prompt.replace(" секунд", "")
+
+        await update.message.reply_text("✍️ Теперь отправь описание видео.")
+        return
 
     if prompt == "💳 Купить генерации: /buy":
         await buy(update, context)
@@ -302,12 +321,19 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if prompt == "🆘 Связаться с поддержкой":
         await update.message.reply_text(
-        "🆘 Написать в поддержку: https://t.me/suppTarantino2",
-        disable_web_page_preview=True
-    )
+            "🆘 Написать в поддержку: https://t.me/suppTarantino2",
+            disable_web_page_preview=True
+        )
+        return
     return
 
     if user_id not in user_states:
+    if "duration" not in user_states[user_id]:
+        await update.message.reply_text(
+            "Сначала выбери длительность видео:",
+            reply_markup=duration_menu()
+        )
+        return
         await update.message.reply_text("Сначала отправь картинку, потом описание.")
         return
 
@@ -322,6 +348,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     image_path = user_states[user_id]["image_path"]
+        duration = user_states[user_id]["duration"]
 
     await update.message.reply_text(
         "🎥 Запускаю нейросеть.\n\n"
@@ -329,7 +356,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
     try:
-        video_path = generate_video_from_image(image_path, prompt, user_id)
+        video_path = generate_video_from_image(image_path, prompt, user_id, duration)
 
         await update.message.reply_video(
             video=open(video_path, "rb"),
