@@ -244,7 +244,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
-            "💳 Бесплатные генерации закончились.",
+            "💳 Бесплатные генерации закончились.\n\n"
+            "👇 Купить или получить БЕСПЛАТНО 👇",
             reply_markup=paid_menu()
         )
         return
@@ -311,7 +312,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
-            "💳 Бесплатные генерации закончились.",
+            "💳 Бесплатные генерации закончились.\n\n"
+            "👇 Купить или получить БЕСПЛАТНО 👇",
             reply_markup=paid_menu()
         )
         return
