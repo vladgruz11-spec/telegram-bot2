@@ -46,7 +46,7 @@ def paid_menu():
 def duration_menu():
     keyboard = [
         ["5 секунд", "10 секунд"],
-        ["15 секунд", "20 секунд"]
+        ["15 секунд"]
     ]
 
     return ReplyKeyboardMarkup(
@@ -279,7 +279,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     prompt = update.message.text
 
-    if prompt in ["5 секунд", "10 секунд", "15 секунд", "20 секунд"]:
+    if prompt in ["5 секунд", "10 секунд", "15 секунд"]:
         if user_id not in user_states:
             await update.message.reply_text("Сначала отправь картинку.")
             return
