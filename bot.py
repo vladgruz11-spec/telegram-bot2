@@ -351,7 +351,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     image_path = user_states[user_id]["image_path"]
-        duration = user_states[user_id]["duration"]
+    duration = user_states[user_id]["duration"]
 
     await update.message.reply_text(
         "🎥 Запускаю нейросеть.\n\n"
