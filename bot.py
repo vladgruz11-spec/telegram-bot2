@@ -259,7 +259,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
     "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
     "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО\n\n"
-    "Шаг 2: отправь мне картинку.",
+    "Шаг 2: отправь мне картинку, которую хочешь оживить!",
     disable_web_page_preview=True
 )
 
