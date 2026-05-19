@@ -198,17 +198,16 @@ def wait_kie_video_result(task_id: str) -> str:
     }
 
     for _ in range(3600):
-                try:
+        try:
             response = requests.get(
                 url,
                 headers=headers,
                 params={"taskId": task_id},
-                timeout=60
+                timeout=3600
             )
             response.raise_for_status()
             result = response.json()
         except requests.exceptions.Timeout:
-            print(f"KIE_TIMEOUT task_id={task_id}", flush=True)
             time.sleep(10)
             continue
 
@@ -395,15 +394,23 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         video_path = generate_video_from_image(image_path, prompt, user_id, duration)
 
-        await update.message.reply_video(
-            video=open(video_path, "rb"),
-            caption="✅ Готово! Вот твоё AI-видео."
-        )
-
-        if free_used < 1:
+                if free_used < 1:
             increment_free_used(user_id)
         else:
             decrement_paid_credit(user_id, video_cost)
+
+        try:
+            await update.message.reply_video(
+                video=open(video_path, "rb"),
+                caption="✅ Готово! Вот твоё AI-видео."
+            )
+        except Exception:
+            await update.message.reply_text(
+                "⚠️ Видео было сгенерировано, но Telegram не смог его отправить.\n\n"
+                "Напиши в поддержку:\n"
+                "https://t.me/Vlad101ss",
+                disable_web_page_preview=True
+            )
 
         free_used_after, paid_credits_after = get_user(user_id)
         free_left = max(0, 1 - free_used_after)
