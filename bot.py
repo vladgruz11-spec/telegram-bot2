@@ -394,7 +394,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         video_path = generate_video_from_image(image_path, prompt, user_id, duration)
         
-    if free_used < 1:
+        if free_used < 1:
             increment_free_used(user_id)
         else:
             decrement_paid_credit(user_id, video_cost)
