@@ -421,7 +421,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 disable_web_page_preview=True
             )
 
-                free_used_after, paid_credits_after = get_user(user_id)
+        free_used_after, paid_credits_after = get_user(user_id)
 
         if free_used < 1:
             await update.message.reply_text(
