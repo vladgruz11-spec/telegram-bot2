@@ -342,7 +342,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if prompt == "🆘 Связаться с поддержкой":
         await update.message.reply_text(
-            "🆘 Написать в поддержку: https://t.me/suppTarantino2",
+            "🆘 Написать в поддержку: https://t.me/Vlad101ss",
             disable_web_page_preview=True
         )
         return
