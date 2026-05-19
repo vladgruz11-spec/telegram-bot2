@@ -288,6 +288,15 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_states[user_id] = {"image_path": str(image_path)}
 
+    if free_used < 1:
+        user_states[user_id]["duration"] = "5"
+
+        await update.message.reply_text(
+            "✅ Картинку получил.\n\n"
+            "Теперь отправь описание видео."
+        )
+        return
+
     await update.message.reply_text(
         "✅ Картинку получил.\n\n"
         "Выбери длительность видео:",
@@ -412,13 +421,18 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 disable_web_page_preview=True
             )
 
-        free_used_after, paid_credits_after = get_user(user_id)
-        free_left = max(0, 1 - free_used_after)
+                free_used_after, paid_credits_after = get_user(user_id)
 
-        await update.message.reply_text(
-            f"Осталось бесплатных генераций: {free_left}\n"
-            f"Баланс: {paid_credits_after} ₽"
-        )
+        if free_used < 1:
+            await update.message.reply_text(
+                "💳 Бесплатные генерации закончились.\n\n"
+                "👇 Купить или получить БЕСПЛАТНО 👇",
+                reply_markup=paid_menu()
+            )
+        else:
+            await update.message.reply_text(
+                f"Баланс: {paid_credits_after} ₽"
+            )
 
     except Exception as e:
         await update.message.reply_text(
