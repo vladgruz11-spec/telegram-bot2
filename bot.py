@@ -198,14 +198,19 @@ def wait_kie_video_result(task_id: str) -> str:
     }
 
     for _ in range(3600):
-        response = requests.get(
-            url,
-            headers=headers,
-            params={"taskId": task_id},
-            timeout=3600
-        )
-        response.raise_for_status()
-        result = response.json()
+                try:
+            response = requests.get(
+                url,
+                headers=headers,
+                params={"taskId": task_id},
+                timeout=60
+            )
+            response.raise_for_status()
+            result = response.json()
+        except requests.exceptions.Timeout:
+            print(f"KIE_TIMEOUT task_id={task_id}", flush=True)
+            time.sleep(10)
+            continue
 
         data = result.get("data", {})
         state = data.get("state")
