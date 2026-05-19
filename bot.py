@@ -50,8 +50,7 @@ def paid_menu():
     )
 def duration_menu():
     keyboard = [
-        ["5 секунд", "10 секунд"],
-        ["15 секунд"]
+        ["5 секунд", "10 секунд"]
     ]
 
     return ReplyKeyboardMarkup(
@@ -336,7 +335,6 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"Стоимость:\n"
             f"5 секунд — {VIDEO_PRICES['5']} ₽\n"
             f"10 секунд — {VIDEO_PRICES['10']} ₽\n"
-            f"15 секунд — {VIDEO_PRICES['15']} ₽"
         )
         return
 
@@ -347,7 +345,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    if prompt in ["5 секунд", "10 секунд", "15 секунд"]:
+    if prompt in ["5 секунд", "10 секунд"]:
         if user_id not in user_states:
             await update.message.reply_text("Сначала отправь картинку.")
             return
@@ -423,7 +421,6 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Стоимость генераций:\n"
         "5 секунд — 99 ₽\n"
         "10 секунд — 155 ₽\n"
-        "15 секунд — 219 ₽\n\n"
         "Выбери сумму пополнения:",
         reply_markup=topup_menu()
     )
