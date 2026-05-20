@@ -421,7 +421,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
-            "💳Недостаточно средств для генирации.\n\n"
+            "💳Недостаточно средств для генерации.\n\n"
             "👇Пополнить баланс или получить БЕСПЛАТНО",
             reply_markup=paid_menu()
         )
@@ -538,7 +538,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
         await update.message.reply_text(
-            "💳Недостаточно средств для генирации.\n\n"
+            "💳Недостаточно средств для генерации.\n\n"
             "👇Пополнить баланс или получить БЕСПЛАТНО",
             reply_markup=paid_menu()
         )
@@ -578,7 +578,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if paid_credits_after <= 0:
             await update.message.reply_text(
-                "💳Недостаточно средств для генирации.\n\n"
+                "💳Недостаточно средств для генерации.\n\n"
                 "👇Пополнить баланс или получить БЕСПЛАТНО👇",
                 reply_markup=paid_menu()
             )
