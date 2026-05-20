@@ -443,12 +443,12 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"Баланс: {paid_credits_after} ₽"
         )
 
-        await update.message.reply_text(
+    await update.message.reply_text(
             f"Баланс: {paid_credits_after} ₽"
         )
 
-        if paid_credits_after <= 0:
-            await update.message.reply_text(
+    if paid_credits_after <= 0:
+        await update.message.reply_text(
                 "💳 Бесплатные генерации закончились.\n\n"
                 "👇 Купить или получить БЕСПЛАТНО 👇",
                 reply_markup=paid_menu()
