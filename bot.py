@@ -127,7 +127,7 @@ def get_user(user_id: int):
     conn.close()
     return free_used, paid_credits
     
-    def give_balance(user_id: int, amount: int):
+def give_balance(user_id: int, amount: int):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
