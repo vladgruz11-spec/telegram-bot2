@@ -103,6 +103,12 @@ def init_db():
             paid_credits INTEGER DEFAULT 0
         )
     """)
+
+    try:
+        cur.execute("ALTER TABLE users ADD COLUMN username TEXT")
+    except sqlite3.OperationalError:
+        pass
+
     conn.commit()
     conn.close()
 
@@ -125,7 +131,48 @@ def get_user(user_id: int):
         free_used, paid_credits = row
 
     conn.close()
-    return free_used, paid_credits
+       return free_used, paid_credits
+
+
+def save_username(user_id: int, username):
+    if not username:
+        return
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT OR IGNORE INTO users (user_id, free_used, paid_credits, username) VALUES (?, 0, 0, ?)",
+        (user_id, username.lower())
+    )
+
+    cur.execute(
+        "UPDATE users SET username = ? WHERE user_id = ?",
+        (username.lower(), user_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def get_user_id_by_username(username: str):
+    username = username.replace("@", "").lower()
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT user_id FROM users WHERE username = ?",
+        (username,)
+    )
+
+    row = cur.fetchone()
+    conn.close()
+
+    if row is None:
+        return None
+
+    return row[0]
     
 def give_balance(user_id: int, amount: int):
     conn = sqlite3.connect(DB_PATH)
@@ -279,6 +326,7 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int, durati
 
 async def myid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
+    save_username(user_id, update.message.from_user.username)
     await update.message.reply_text(
         f"Твой Telegram ID:\n{user_id}"
     )
@@ -311,6 +359,44 @@ async def give(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         f"✅ Пользователю {target_id} выдано {amount} ₽"
+    )
+    async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    admin_id = update.message.from_user.id
+
+    if admin_id not in ADMIN_IDS:
+        await update.message.reply_text("❌ Нет доступа.")
+        return
+
+    if len(context.args) != 2:
+        await update.message.reply_text(
+            "Используй:\n"
+            "/giveuser @username СУММА\n\n"
+            "Пример:\n"
+            "/giveuser @username 99"
+        )
+        return
+
+    username = context.args[0]
+
+    try:
+        amount = int(context.args[1])
+    except:
+        await update.message.reply_text("❌ Ошибка суммы.")
+        return
+
+    target_id = get_user_id_by_username(username)
+
+    if target_id is None:
+        await update.message.reply_text(
+            "❌ Пользователь не найден.\n"
+            "Он должен сначала написать боту /start."
+        )
+        return
+
+    give_balance(target_id, amount)
+
+    await update.message.reply_text(
+        f"✅ @{username.replace('@', '')} выдано {amount} ₽"
     )
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
@@ -544,6 +630,7 @@ def main():
     app.add_handler(CommandHandler("buy", buy))
     app.add_handler(CommandHandler("myid", myid))
     app.add_handler(CommandHandler("give", give))
+    app.add_handler(CommandHandler("giveuser", giveuser))
     app.add_handler(PreCheckoutQueryHandler(precheckout_callback))
     app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
