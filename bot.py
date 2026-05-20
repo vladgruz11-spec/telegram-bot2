@@ -438,6 +438,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     image_path = user_states[user_id]["image_path"]
     duration = user_states[user_id]["duration"]
     video_cost = VIDEO_PRICES[duration]
+
+    free_used_after, paid_credits_after = get_user(user_id)
     
     await update.message.reply_text(
             f"Баланс: {paid_credits_after} ₽"
