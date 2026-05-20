@@ -39,7 +39,7 @@ VIDEO_PRICES = {
 }
 def paid_menu():
     keyboard = [
-        ["💳 Купить генерации: /buy"],
+        ["💳 Пополнить баланс: /buy"],
         ["🎁 БЕСПЛАТНЫЕ генерации: /ref"],
         ["🚀 Запустить бота"],
         ["📘 Как пользоваться ботом: /help"],
@@ -421,8 +421,8 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if free_used >= 1 and paid_credits <= 0:
         await update.message.reply_text(
-            "💳 Бесплатные генерации закончились.\n\n"
-            "👇Купить или получить БЕСПЛАТНО👇",
+            "💳Недостаточно средств для генирации.\n\n"
+            "👇Пополнить баланс или получить БЕСПЛАТНО",
             reply_markup=paid_menu()
         )
         return
@@ -538,8 +538,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
         await update.message.reply_text(
-            "💳 Бесплатные генерации закончились.\n\n"
-            "👇Купить или получить БЕСПЛАТНО👇",
+            "💳Недостаточно средств для генирации.\n\n"
+            "👇Пополнить баланс или получить БЕСПЛАТНО",
             reply_markup=paid_menu()
         )
         return
@@ -578,8 +578,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if paid_credits_after <= 0:
             await update.message.reply_text(
-                "💳 Бесплатные генерации закончились.\n\n"
-                "👇Купить или получить БЕСПЛАТНО👇",
+                "💳Недостаточно средств для генирации.\n\n"
+                "👇Пополнить баланс или получить БЕСПЛАТНО👇",
                 reply_markup=paid_menu()
             )
 
