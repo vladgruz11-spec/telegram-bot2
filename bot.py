@@ -677,10 +677,15 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             decrement_paid_credit(user_id, video_cost)
 
         try:
-            await update.message.reply_video(
-                video=open(video_path, "rb"),
-                caption="✅ Готово! Вот твоё AI-видео."
-            )
+            with open(video_path, "rb") as video_file:
+                await update.message.reply_video(
+                    video=video_file,
+                    caption="✅ Готово! Вот твоё AI-видео.",
+                    read_timeout=3600,
+                    write_timeout=3600,
+                    connect_timeout=60,
+                    pool_timeout=3600
+                )
         except Exception:
             await update.message.reply_text(
                 "⚠️ Видео было сгенерировано, но Telegram не смог его отправить.\n\n"
