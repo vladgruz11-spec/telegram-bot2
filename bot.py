@@ -460,7 +460,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Генерация видео может занять 2–10 минут. Не отправляй новую картинку, пока я работаю."
     )
 
-        try:
+    try:
         video_path = generate_video_from_image(image_path, prompt, user_id, duration)
 
         if free_used < 1:
