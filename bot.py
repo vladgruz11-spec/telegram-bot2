@@ -438,8 +438,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     image_path = user_states[user_id]["image_path"]
     duration = user_states[user_id]["duration"]
     video_cost = VIDEO_PRICES[duration]
-
-        await update.message.reply_text(
+    
+    await update.message.reply_text(
             f"Баланс: {paid_credits_after} ₽"
         )
 
@@ -460,9 +460,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Генерация видео может занять 2–10 минут. Не отправляй новую картинку, пока я работаю."
     )
 
-    try:
+        try:
         video_path = generate_video_from_image(image_path, prompt, user_id, duration)
-        
+
         if free_used < 1:
             increment_free_used(user_id)
         else:
@@ -493,6 +493,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "👇 Купить или получить БЕСПЛАТНО 👇",
                 reply_markup=paid_menu()
             )
+
+    except Exception as e:
         await update.message.reply_text(
             f"❌ Ошибка генерации видео:\n\n{e}"
         )
