@@ -403,6 +403,9 @@ async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"✅ @{username.replace('@', '')} выдано {amount} ₽"
     )
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user.id
+    save_username(user_id, update.message.from_user.username)
+    
     await update.message.reply_text(
     "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
     "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО\n\n"
