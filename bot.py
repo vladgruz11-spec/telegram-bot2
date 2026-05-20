@@ -29,10 +29,13 @@ MEDIA_DIR.mkdir(exist_ok=True)
 
 DB_PATH = "/var/data/users.db"
 user_states = {}
+
+ADMIN_IDS = {
+    6164104276
+}
 VIDEO_PRICES = {
     "5": 99,
     "10": 155,
-    "15": 219,
 }
 def paid_menu():
     keyboard = [
@@ -123,6 +126,23 @@ def get_user(user_id: int):
 
     conn.close()
     return free_used, paid_credits
+    
+    def give_balance(user_id: int, amount: int):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT OR IGNORE INTO users (user_id, free_used, paid_credits) VALUES (?, 0, 0)",
+        (user_id,)
+    )
+
+    cur.execute(
+        "UPDATE users SET paid_credits = paid_credits + ? WHERE user_id = ?",
+        (amount, user_id)
+    )
+
+    conn.commit()
+    conn.close()
 
 
 def increment_free_used(user_id: int):
@@ -257,7 +277,41 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int, durati
     video_path = download_video(video_url, user_id)
     return video_path
 
+async def myid(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user.id
+    await update.message.reply_text(
+        f"Твой Telegram ID:\n{user_id}"
+    )
 
+
+async def give(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    admin_id = update.message.from_user.id
+
+    if admin_id not in ADMIN_IDS:
+        await update.message.reply_text("❌ Нет доступа.")
+        return
+
+    if len(context.args) != 2:
+        await update.message.reply_text(
+            "Используй:\n"
+            "/give USER_ID СУММА\n\n"
+            "Пример:\n"
+            "/give 123456789 99"
+        )
+        return
+
+    try:
+        target_id = int(context.args[0])
+        amount = int(context.args[1])
+    except:
+        await update.message.reply_text("❌ Ошибка формата.")
+        return
+
+    give_balance(target_id, amount)
+
+    await update.message.reply_text(
+        f"✅ Пользователю {target_id} выдано {amount} ₽"
+    )
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
     "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
@@ -480,6 +534,8 @@ def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("buy", buy))
+    app.add_handler(CommandHandler("myid", myid))
+    app.add_handler(CommandHandler("give", give))
     app.add_handler(PreCheckoutQueryHandler(precheckout_callback))
     app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
