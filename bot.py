@@ -61,6 +61,15 @@ def duration_menu():
         keyboard,
         resize_keyboard=True
     )
+def duration_menu_5_only():
+    keyboard = [
+        ["5 секунд"]
+    ]
+
+    return ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True
+    )
 def topup_menu():
     keyboard = [
         ["💳 Пополнить баланс на 199 ₽"],
@@ -526,6 +535,14 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
+    if paid_credits < VIDEO_PRICES["10"]:
+        await update.message.reply_text(
+            "✅ Картинку получил.\n\n"
+            "Выбери длительность видео:",
+            reply_markup=duration_menu_5_only()
+        )
+        return
+
     await update.message.reply_text(
         "✅ Картинку получил.\n\n"
         "Выбери длительность видео:",
@@ -592,7 +609,23 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("Сначала отправь картинку.")
             return
 
-        user_states[user_id]["duration"] = prompt.replace(" секунд", "")
+        free_used, paid_credits = get_user(user_id)
+        selected_duration = prompt.replace(" секунд", "")
+        selected_cost = VIDEO_PRICES[selected_duration]
+
+        if free_used >= 1 and paid_credits < selected_cost:
+            await update.message.reply_text(
+                "💳Недостаточно средств для генерации.\n\n"
+                "👇Пополнить баланс или получить БЕСПЛАТНО👇"
+            )
+
+            await update.message.reply_text(
+                "Меню бота",
+                reply_markup=inline_menu()
+            )
+            return
+
+        user_states[user_id]["duration"] = selected_duration
 
         await update.message.reply_text("✍️ Теперь отправь описание видео.")
         return
