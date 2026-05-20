@@ -439,14 +439,20 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     duration = user_states[user_id]["duration"]
     video_cost = VIDEO_PRICES[duration]
 
-    if free_used >= 1 and paid_credits < video_cost:
-        await update.message.reply_text(
-            f"💳 Бесплатные генерации закончились.\n\n"
-            f"Для ролика на {duration} сек нужно {video_cost} ₽.\n"
-            f"Твой баланс: {paid_credits} ₽.\n\n"
-            f"👇 Купить или получить БЕСПЛАТНО 👇",
-            reply_markup=paid_menu()
+            await update.message.reply_text(
+            f"Баланс: {paid_credits_after} ₽"
         )
+
+        await update.message.reply_text(
+            f"Баланс: {paid_credits_after} ₽"
+        )
+
+        if paid_credits_after <= 0:
+            await update.message.reply_text(
+                "💳 Бесплатные генерации закончились.\n\n"
+                "👇 Купить или получить БЕСПЛАТНО 👇",
+                reply_markup=paid_menu()
+            )
         return
 
     await update.message.reply_text(
