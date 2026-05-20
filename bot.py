@@ -5,12 +5,13 @@ import sqlite3
 import requests
 from pathlib import Path
 
-from telegram import Update, LabeledPrice, ReplyKeyboardMarkup
+from telegram import Update, LabeledPrice, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
     MessageHandler,
     PreCheckoutQueryHandler,
+    CallbackQueryHandler,
     ContextTypes,
     filters,
 )
@@ -72,6 +73,17 @@ def topup_menu():
         keyboard,
         resize_keyboard=True
     )
+def inline_menu():
+    keyboard = [
+        [InlineKeyboardButton("💳 Пополнить баланс", callback_data="buy")],
+        [InlineKeyboardButton("🎁 БЕСПЛАТНЫЕ генерации", callback_data="ref")],
+        [InlineKeyboardButton("🚀 Запустить бота", callback_data="start")],
+        [InlineKeyboardButton("📘 Как пользоваться ботом", callback_data="help")],
+        [InlineKeyboardButton("👤 Мой баланс", callback_data="profile")],
+        [InlineKeyboardButton("🆘 Связаться с поддержкой", url="https://t.me/Vlad101ss")]
+    ]
+
+    return InlineKeyboardMarkup(keyboard)
 def add_paid_credit(user_id: int, amount: int = 1):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -328,6 +340,12 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int, durati
     video_path = download_video(video_url, user_id)
     return video_path
 
+async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Меню бота",
+        reply_markup=inline_menu()
+    )
+
 async def myid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     save_username(user_id, update.message.from_user.username)
@@ -402,16 +420,76 @@ async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"✅ @{username.replace('@', '')} выдано {amount} ₽"
     )
+async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    user_id = query.from_user.id
+    action = query.data
+
+    if action == "buy":
+        await query.message.reply_text(
+            "💳 Пополнение баланса:\n\n"
+            "Стоимость генераций:\n"
+            "5 секунд — 99 ₽\n"
+            "10 секунд — 155 ₽\n"
+            "Выбери сумму пополнения:",
+            reply_markup=topup_menu()
+        )
+        return
+
+    if action == "ref":
+        await query.message.reply_text("🎁 Реферальную программу подключим следующим этапом.")
+        return
+
+    if action == "start":
+        await query.message.reply_text(
+            "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
+            "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО",
+            disable_web_page_preview=True
+        )
+
+        await query.message.reply_text(
+            "Шаг 2: отправь мне картинку, которую хочешь оживить!"
+        )
+        return
+
+    if action == "help":
+        await query.message.reply_text(
+            "📘 Как пользоваться ботом:\n\n"
+            "1. Отправь картинку.\n"
+            "2. Выбери длительность видео.\n"
+            "3. Напиши описание видео.\n"
+            "4. Дождись готового AI-видео."
+        )
+        return
+
+    if action == "profile":
+        free_used, paid_credits = get_user(user_id)
+        free_left = max(0, 1 - free_used)
+
+        await query.message.reply_text(
+            f"👤 Твой баланс:\n\n"
+            f"Бесплатных генераций: {free_left}\n"
+            f"Баланс: {paid_credits} ₽\n\n"
+            f"Стоимость:\n"
+            f"5 секунд — {VIDEO_PRICES['5']} ₽\n"
+            f"10 секунд — {VIDEO_PRICES['10']} ₽"
+        )
+        return
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     save_username(user_id, update.message.from_user.username)
     
     await update.message.reply_text(
-    "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
-    "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО\n\n"
-    "Шаг 2: отправь мне картинку, которую хочешь оживить!",
-    disable_web_page_preview=True
-)
+        "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
+        "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО",
+        disable_web_page_preview=True
+    )
+
+    await update.message.reply_text(
+        "Шаг 2: отправь мне картинку, которую хочешь оживить!"
+    )
 
 
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -419,11 +497,15 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     free_used, paid_credits = get_user(user_id)
 
-    if free_used >= 1 and paid_credits <= 0:
+    if free_used >= 1 and paid_credits < VIDEO_PRICES["5"]:
         await update.message.reply_text(
             "💳Недостаточно средств для генерации.\n\n"
-            "👇Пополнить баланс или получить БЕСПЛАТНО",
-            reply_markup=paid_menu()
+            "👇Пополнить баланс или получить БЕСПЛАТНО👇"
+        )
+
+        await update.message.reply_text(
+            "Меню бота",
+            reply_markup=inline_menu()
         )
         return
 
@@ -471,7 +553,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if prompt == "🚀 Запустить бота":
-        await start(update, context)
+        await menu(update, context)
         return
 
     if prompt == "📘 Как пользоваться ботом: /help":
@@ -539,8 +621,12 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await update.message.reply_text(
             "💳Недостаточно средств для генерации.\n\n"
-            "👇Пополнить баланс или получить БЕСПЛАТНО",
-            reply_markup=paid_menu()
+            "👇Пополнить баланс или получить БЕСПЛАТНО👇"
+        )
+
+        await update.message.reply_text(
+            "Меню бота",
+            reply_markup=inline_menu()
         )
         return
 
@@ -579,8 +665,12 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if paid_credits_after <= 0:
             await update.message.reply_text(
                 "💳Недостаточно средств для генерации.\n\n"
-                "👇Пополнить баланс или получить БЕСПЛАТНО👇",
-                reply_markup=paid_menu()
+                "👇Пополнить баланс или получить БЕСПЛАТНО👇"
+            )
+
+            await update.message.reply_text(
+                "Меню бота",
+                reply_markup=inline_menu()
             )
 
     except Exception as e:
@@ -628,10 +718,12 @@ def main():
     app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("menu", menu))
     app.add_handler(CommandHandler("buy", buy))
     app.add_handler(CommandHandler("myid", myid))
     app.add_handler(CommandHandler("give", give))
     app.add_handler(CommandHandler("giveuser", giveuser))
+    app.add_handler(CallbackQueryHandler(menu_button))
     app.add_handler(PreCheckoutQueryHandler(precheckout_callback))
     app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
