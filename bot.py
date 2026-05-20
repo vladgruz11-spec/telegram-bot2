@@ -113,7 +113,7 @@ def init_db():
     conn.close()
     
     
-    def get_user(user_id: int):
+def get_user(user_id: int):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
