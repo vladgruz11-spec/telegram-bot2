@@ -452,7 +452,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if paid_credits_after <= 0:
         await update.message.reply_text(
                 "💳 Бесплатные генерации закончились.\n\n"
-                "👇 Купить или получить БЕСПЛАТНО 👇",
+                "👇Купить или получить БЕСПЛАТНО👇",
                 reply_markup=paid_menu()
             )
         return
@@ -492,7 +492,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if paid_credits_after <= 0:
             await update.message.reply_text(
                 "💳 Бесплатные генерации закончились.\n\n"
-                "👇 Купить или получить БЕСПЛАТНО 👇",
+                "👇Купить или получить БЕСПЛАТНО👇",
                 reply_markup=paid_menu()
             )
 
