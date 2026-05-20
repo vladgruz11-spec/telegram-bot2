@@ -364,7 +364,7 @@ async def give(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"✅ Пользователю {target_id} выдано {amount} ₽"
     )
-    async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.message.from_user.id
 
     if admin_id not in ADMIN_IDS:
