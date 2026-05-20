@@ -439,7 +439,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     duration = user_states[user_id]["duration"]
     video_cost = VIDEO_PRICES[duration]
 
-            await update.message.reply_text(
+        await update.message.reply_text(
             f"Баланс: {paid_credits_after} ₽"
         )
 
