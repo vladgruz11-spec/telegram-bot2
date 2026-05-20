@@ -748,7 +748,15 @@ async def successful_payment_callback(update: Update, context: ContextTypes.DEFA
 def main():
     init_db()
 
-    app = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
+    app = (
+    ApplicationBuilder()
+    .token(TELEGRAM_TOKEN)
+    .connect_timeout(60)
+    .read_timeout(3600)
+    .write_timeout(3600)
+    .pool_timeout(3600)
+    .build()
+)
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("menu", menu))
