@@ -111,12 +111,16 @@ def init_db():
 
     conn.commit()
     conn.close()
-
-
-def get_user(user_id: int):
+    
+    
+    def get_user(user_id: int):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    cur.execute("SELECT free_used, paid_credits FROM users WHERE user_id = ?", (user_id,))
+
+    cur.execute(
+        "SELECT free_used, paid_credits FROM users WHERE user_id = ?",
+        (user_id,)
+    )
     row = cur.fetchone()
 
     if row is None:
@@ -131,7 +135,7 @@ def get_user(user_id: int):
         free_used, paid_credits = row
 
     conn.close()
-       return free_used, paid_credits
+    return free_used, paid_credits
 
 
 def save_username(user_id: int, username):
