@@ -351,6 +351,43 @@ def download_video(video_url: str, user_id: int) -> str:
     return str(video_path)
 
 
+def create_yookassa_payment(user_id: int, amount: int) -> str:
+    url = "https://api.yookassa.ru/v3/payments"
+
+    headers = {
+        "Idempotence-Key": f"topup_{user_id}_{amount}_{int(time.time())}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "amount": {
+            "value": f"{amount}.00",
+            "currency": "RUB"
+        },
+        "capture": True,
+        "confirmation": {
+            "type": "redirect",
+            "return_url": "https://t.me/Tarantino2Bot"
+        },
+        "description": f"Пополнение баланса Telegram-бота на {amount} рублей",
+        "metadata": {
+            "user_id": str(user_id),
+            "amount": str(amount)
+        }
+    }
+
+    response = requests.post(
+        url,
+        auth=(YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY),
+        headers=headers,
+        json=payload,
+        timeout=60
+    )
+
+    response.raise_for_status()
+    result = response.json()
+
+    return result["confirmation"]["confirmation_url"]
 def generate_video_from_image(image_path: str, prompt: str, user_id: int, duration: str) -> str:
     image_url = upload_image_to_kie(image_path)
     task_id = create_kie_video_task(image_url, prompt, duration)
