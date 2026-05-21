@@ -475,6 +475,19 @@ async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"✅ @{username.replace('@', '')} выдано {amount} ₽"
     )
+def check_yookassa_payment(payment_id: str) -> bool:
+    url = f"https://api.yookassa.ru/v3/payments/{payment_id}"
+
+    response = requests.get(
+        url,
+        auth=(YOOKASSA_SHOP_ID, YOOKASSA_SECRET_KEY),
+        timeout=60
+    )
+
+    response.raise_for_status()
+    result = response.json()
+
+    return result.get("status") == "succeeded"
 async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
