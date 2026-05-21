@@ -494,7 +494,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = query.from_user.id
     action = query.data
-    if action.startswith("checkpay_"):
+        if action.startswith("checkpay_"):
         parts = action.split("_")
         payment_id = parts[1]
         amount = int(parts[2])
@@ -507,7 +507,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             return
 
-    if not paid:
+        if not paid:
             await query.message.reply_text(
                 "⏳ Оплата пока не найдена.\n\n"
                 "Если ты уже оплатил — подожди 10–20 секунд и нажми кнопку ещё раз."
