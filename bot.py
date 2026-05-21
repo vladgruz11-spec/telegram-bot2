@@ -605,9 +605,19 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if prompt.startswith("💳 Пополнить баланс на "):
+        amount_text = (
+            prompt
+            .replace("💳 Пополнить баланс на ", "")
+            .replace(" ₽", "")
+            .strip()
+        )
+        amount = int(amount_text)
+
+        payment_url = create_yookassa_payment(user_id, amount)
+
         await update.message.reply_text(
-            "💳 Оплата через ЮKassa скоро будет подключена.\n\n"
-            "Сейчас это меню нужно для проверки магазина."
+            f"💳 Пополнение баланса на {amount} ₽\n\n"
+            f"Нажми на ссылку и оплати:\n{payment_url}"
         )
         return
 
