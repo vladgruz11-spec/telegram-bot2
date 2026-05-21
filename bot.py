@@ -494,7 +494,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = query.from_user.id
     action = query.data
-        if action.startswith("checkpay_"):
+    if action.startswith("checkpay_"):
         parts = action.split("_")
         payment_id = parts[1]
         amount = int(parts[2])
@@ -519,12 +519,12 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         _, paid_credits = get_user(user_id)
 
         await query.message.reply_text(
-            f"✅ Оплата получена!\n\n"
-            f"Баланс пополнен на {amount} ₽.\n"
-            f"Текущий баланс: {paid_credits} ₽.\n\n"
-            f"Теперь отправь картинку."
-        )
-        return
+        f"✅ Оплата получена!\n\n"
+        f"Баланс пополнен на {amount} ₽.\n"
+        f"Текущий баланс: {paid_credits} ₽.\n\n"
+        f"Теперь отправь картинку."
+    )
+    return
 
     if action == "buy":
         await query.message.reply_text(
