@@ -658,19 +658,18 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         amount = int(amount_text)
 
         payment_url, payment_id = create_yookassa_payment(user_id, amount)
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("💳 Оплатить", url=payment_url)],
+            [InlineKeyboardButton("✅ Проверить оплату", callback_data=f"checkpay_{payment_id}_{amount}")]
+        ])
 
-keyboard = InlineKeyboardMarkup([
-    [InlineKeyboardButton("💳 Оплатить", url=payment_url)],
-    [InlineKeyboardButton("✅ Проверить оплату", callback_data=f"checkpay_{payment_id}_{amount}")]
-])
-
-await update.message.reply_text(
-    f"💳 Пополнение баланса на {amount} ₽\n\n"
-    f"1. Нажми «Оплатить»\n"
-    f"2. После оплаты вернись сюда\n"
-    f"3. Нажми «✅ Проверить оплату»",
-    reply_markup=keyboard
-)
+        await update.message.reply_text(
+            f"💳 Пополнение баланса на {amount} ₽\n\n"
+            f"1. Нажми «Оплатить»\n"
+            f"2. После оплаты вернись сюда\n"
+            f"3. Нажми «✅ Проверить оплату»",
+            reply_markup=keyboard
+        )
         return
 
     if prompt == "🎁 БЕСПЛАТНЫЕ генерации: /ref":
