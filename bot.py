@@ -494,6 +494,37 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = query.from_user.id
     action = query.data
+    if action.startswith("checkpay_"):
+        parts = action.split("_")
+        payment_id = parts[1]
+        amount = int(parts[2])
+
+        try:
+            paid = check_yookassa_payment(payment_id)
+        except Exception as e:
+            await query.message.reply_text(
+                f"❌ Не удалось проверить оплату:\n\n{e}"
+            )
+            return
+
+    if not paid:
+            await query.message.reply_text(
+                "⏳ Оплата пока не найдена.\n\n"
+                "Если ты уже оплатил — подожди 10–20 секунд и нажми кнопку ещё раз."
+            )
+            return
+
+        add_paid_credit(user_id, amount)
+
+        _, paid_credits = get_user(user_id)
+
+        await query.message.reply_text(
+            f"✅ Оплата получена!\n\n"
+            f"Баланс пополнен на {amount} ₽.\n"
+            f"Текущий баланс: {paid_credits} ₽.\n\n"
+            f"Теперь отправь картинку."
+        )
+        return
 
     if action == "buy":
         await query.message.reply_text(
