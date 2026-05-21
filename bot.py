@@ -19,11 +19,20 @@ from telegram.ext import (
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 KIE_API_KEY = os.getenv("KIE_API_KEY")
 
+YOOKASSA_SHOP_ID = os.getenv("YOOKASSA_SHOP_ID")
+YOOKASSA_SECRET_KEY = os.getenv("YOOKASSA_SECRET_KEY")
+
 if not TELEGRAM_TOKEN:
     raise RuntimeError("TELEGRAM_TOKEN не найден!")
 
 if not KIE_API_KEY:
     raise RuntimeError("KIE_API_KEY не найден!")
+
+if not YOOKASSA_SHOP_ID:
+    raise RuntimeError("YOOKASSA_SHOP_ID не найден!")
+
+if not YOOKASSA_SECRET_KEY:
+    raise RuntimeError("YOOKASSA_SECRET_KEY не найден!")
 
 MEDIA_DIR = Path("media")
 MEDIA_DIR.mkdir(exist_ok=True)
