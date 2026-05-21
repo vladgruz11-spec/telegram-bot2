@@ -387,7 +387,7 @@ def create_yookassa_payment(user_id: int, amount: int) -> str:
     response.raise_for_status()
     result = response.json()
 
-    return result["confirmation"]["confirmation_url"]
+    return result["confirmation"]["confirmation_url"], result["id"]
 def generate_video_from_image(image_path: str, prompt: str, user_id: int, duration: str) -> str:
     image_url = upload_image_to_kie(image_path)
     task_id = create_kie_video_task(image_url, prompt, duration)
