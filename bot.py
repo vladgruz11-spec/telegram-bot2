@@ -494,6 +494,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = query.from_user.id
     action = query.data
+
     if action.startswith("checkpay_"):
         parts = action.split("_")
         payment_id = parts[1]
@@ -515,16 +516,15 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
         add_paid_credit(user_id, amount)
-
         _, paid_credits = get_user(user_id)
 
         await query.message.reply_text(
-        f"✅ Оплата получена!\n\n"
-        f"Баланс пополнен на {amount} ₽.\n"
-        f"Текущий баланс: {paid_credits} ₽.\n\n"
-        f"Теперь отправь картинку."
-    )
-    return
+            f"✅ Оплата получена!\n\n"
+            f"Баланс пополнен на {amount} ₽.\n"
+            f"Текущий баланс: {paid_credits} ₽.\n\n"
+            f"Теперь отправь картинку."
+        )
+        return
 
     if action == "buy":
         await query.message.reply_text(
@@ -542,15 +542,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if action == "start":
-        await query.message.reply_text(
-            "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
-            "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО",
-            disable_web_page_preview=True
-        )
-
-        await query.message.reply_text(
-            "Шаг 2: отправь мне картинку, которую хочешь оживить!"
-        )
+        await start(query, context)
         return
 
     if action == "help":
