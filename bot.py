@@ -52,7 +52,7 @@ def paid_menu():
         ["💳 Пополнить баланс: /buy"],
         ["🎁 БЕСПЛАТНЫЕ генерации: /ref"],
         ["🚀 Запустить бота"],
-        ["📘 Как пользоваться ботом: /help"],
+        ["📘 Инструкция: /help"],
         ["👤 Мой баланс: /profile"],
         ["🆘 Связаться с поддержкой"]
     ]
@@ -96,7 +96,7 @@ def inline_menu():
         [InlineKeyboardButton("💳 Пополнить баланс", callback_data="buy")],
         [InlineKeyboardButton("🎁 БЕСПЛАТНЫЕ генерации", callback_data="ref")],
         [InlineKeyboardButton("🚀 Запустить бота", callback_data="start")],
-        [InlineKeyboardButton("📘 Как пользоваться ботом", callback_data="help")],
+        [InlineKeyboardButton("📘 Инструкция", callback_data="help")],
         [InlineKeyboardButton("👤 Мой баланс", callback_data="profile")],
         [InlineKeyboardButton("🆘 Связаться с поддержкой", url="https://t.me/Vlad101ss")]
     ]
@@ -547,7 +547,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if action == "help":
         await query.message.reply_text(
-            "📘 Как пользоваться ботом:\n\n"
+            "📘 Инструкция:\n\n"
             "1. Отправь картинку.\n"
             "2. Выбери длительность видео.\n"
             "3. Напиши описание видео.\n"
@@ -672,9 +672,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await menu(update, context)
         return
 
-    if prompt == "📘 Как пользоваться ботом: /help":
+    if prompt == "📘 Инструкция: /help":
         await update.message.reply_text(
-            "📘 Как пользоваться ботом:\n\n"
+            "📘 Инструкция:\n\n"
             "1. Отправь картинку.\n"
             "2. Выбери длительность видео.\n"
             "3. Напиши описание видео.\n"
