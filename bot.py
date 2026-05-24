@@ -292,6 +292,23 @@ def add_partner_money(user_id: int, amount: int):
     conn.commit()
     conn.close()
 
+def get_partner_balance(user_id: int):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT partner_balance FROM users WHERE user_id = ?",
+        (user_id,)
+    )
+
+    row = cur.fetchone()
+    conn.close()
+
+    if row is None:
+        return 0
+
+    return row[0] or 0
+
 def apply_referral_bonus(user_id: int, duration: str):
     referrer_id, ref_mode = get_referrer(user_id)
 
