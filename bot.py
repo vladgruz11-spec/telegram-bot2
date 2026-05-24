@@ -612,6 +612,34 @@ async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"✅ @{username.replace('@', '')} выдано {amount} ₽"
     )
+
+async def partners(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    admin_id = update.message.from_user.id
+
+    if admin_id not in ADMIN_IDS:
+        await update.message.reply_text("❌ Нет доступа.")
+        return
+
+    rows = get_all_partners()
+
+    if not rows:
+        await update.message.reply_text(
+            "Партнёров с балансом нет."
+        )
+        return
+
+    text = "💼 Партнёрские выплаты:\n\n"
+
+    for user_id, username, balance in rows:
+        name = username or "без username"
+
+        text += (
+            f"ID: {user_id}\n"
+            f"@{name}\n"
+            f"К выплате: {balance} ₽\n\n"
+        )
+
+    await update.message.reply_text(text)
 def check_yookassa_payment(payment_id: str) -> bool:
     url = f"https://api.yookassa.ru/v3/payments/{payment_id}"
 
