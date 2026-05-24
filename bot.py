@@ -542,8 +542,18 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if action == "start":
-        await start(query, context)
-        return
+    save_username(user_id, query.from_user.username)
+
+    await query.message.reply_text(
+        "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/Tarantino2Baza, чтобы нас не потерять, если бота заблокируют!\n\n"
+        "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО",
+        disable_web_page_preview=True
+    )
+
+    await query.message.reply_text(
+        "Шаг 2: отправь мне картинку, которую хочешь оживить!"
+    )
+    return
 
     if action == "help":
         await query.message.reply_text(
