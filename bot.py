@@ -665,6 +665,16 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
+    if action == "partner_profile":
+        partner_balance = get_partner_balance(user_id)
+
+        await query.message.reply_text(
+            f"💼 Кабинет партнёра\n\n"
+            f"Баланс к выплате: {partner_balance} ₽\n\n"
+            f"Когда хочешь получить выплату — напиши в поддержку."
+        )
+        return
+
     if action == "start":
         await start(query, context)
         return
