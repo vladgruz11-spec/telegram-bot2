@@ -573,7 +573,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     save_username(user_id, update.message.from_user.username)
     
     await update.message.reply_text(
-        "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/+dFJBLVKcU_BkNTY6, чтобы нас не потерять, если бота заблокируют!\n\n"
+        "Шаг 1: Перед тем как начать, подпишись на канал t.me/@Tarantino2Baza, чтобы нас не потерять, если бота заблокируют!\n\n"
         "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО",
         disable_web_page_preview=True
     )
