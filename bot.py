@@ -918,6 +918,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             increment_free_used(user_id)
         else:
             decrement_paid_credit(user_id, video_cost)
+            apply_referral_bonus(user_id, duration)
 
         try:
             with open(video_path, "rb") as video_file:
