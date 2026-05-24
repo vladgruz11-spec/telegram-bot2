@@ -1126,6 +1126,8 @@ def main():
     app.add_handler(CommandHandler("myid", myid))
     app.add_handler(CommandHandler("give", give))
     app.add_handler(CommandHandler("giveuser", giveuser))
+    app.add_handler(CommandHandler("partners", partners))
+    app.add_handler(CommandHandler("paypartner", paypartner))
     app.add_handler(CallbackQueryHandler(menu_button))
     app.add_handler(PreCheckoutQueryHandler(precheckout_callback))
     app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
