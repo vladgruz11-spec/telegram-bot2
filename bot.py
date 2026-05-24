@@ -139,6 +139,20 @@ def init_db():
         cur.execute("ALTER TABLE users ADD COLUMN username TEXT")
     except sqlite3.OperationalError:
         pass
+    try:
+        cur.execute("ALTER TABLE users ADD COLUMN referrer_id INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass
+
+    try:
+        cur.execute("ALTER TABLE users ADD COLUMN ref_mode TEXT DEFAULT ''")
+    except sqlite3.OperationalError:
+        pass
+
+    try:
+        cur.execute("ALTER TABLE users ADD COLUMN partner_balance INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass
 
     conn.commit()
     conn.close()
