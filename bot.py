@@ -640,6 +640,32 @@ async def partners(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
     await update.message.reply_text(text)
+
+async def paypartner(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    admin_id = update.message.from_user.id
+
+    if admin_id not in ADMIN_IDS:
+        await update.message.reply_text("❌ Нет доступа.")
+        return
+
+    if len(context.args) != 1:
+        await update.message.reply_text(
+            "Используй:\n"
+            "/paypartner USER_ID"
+        )
+        return
+
+    try:
+        target_id = int(context.args[0])
+    except:
+        await update.message.reply_text("Ошибка ID.")
+        return
+
+    reset_partner_balance(target_id)
+
+    await update.message.reply_text(
+        f"✅ Партнёрский баланс {target_id} обнулён."
+    )
 def check_yookassa_payment(payment_id: str) -> bool:
     url = f"https://api.yookassa.ru/v3/payments/{payment_id}"
 
