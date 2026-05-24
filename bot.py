@@ -331,6 +331,37 @@ def apply_referral_bonus(user_id: int, duration: str):
         if bonus > 0:
             add_partner_money(referrer_id, bonus)
 
+def get_all_partners():
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT user_id, username, partner_balance
+        FROM users
+        WHERE partner_balance > 0
+        ORDER BY partner_balance DESC
+        """
+    )
+
+    rows = cur.fetchall()
+    conn.close()
+
+    return rows
+
+
+def reset_partner_balance(user_id: int):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "UPDATE users SET partner_balance = 0 WHERE user_id = ?",
+        (user_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
 
 def increment_free_used(user_id: int):
     conn = sqlite3.connect(DB_PATH)
