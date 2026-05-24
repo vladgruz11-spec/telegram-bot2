@@ -605,7 +605,25 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if action == "ref":
-        await query.message.reply_text("🎁 Реферальную программу подключим следующим этапом.")
+        await query.message.reply_text(
+            f"🎁 БЕСПЛАТНЫЕ генерации\n\n"
+            f"Приглашай друзей и получай бонусы:\n"
+            f"• друг сделал платный ролик 5 сек — тебе +99 ₽ на баланс\n"
+            f"• друг сделал платный ролик 10 сек — тебе +155 ₽ на баланс\n\n"
+            f"Твоя ссылка:\n"
+            f"https://t.me/Tarantino2Bot?start=free_{user_id}"
+        )
+        return
+
+    if action == "earn":
+        await query.message.reply_text(
+            f"💸 ЗАРАБОТАТЬ с Тарантино\n\n"
+            f"Приглашай людей и получай деньги на партнёрский счёт:\n"
+            f"• за платную генерацию 5 сек — 50 ₽\n"
+            f"• за платную генерацию 10 сек — 100 ₽\n\n"
+            f"Твоя ссылка:\n"
+            f"https://t.me/Tarantino2Bot?start=money_{user_id}"
+        )
         return
 
     if action == "start":
