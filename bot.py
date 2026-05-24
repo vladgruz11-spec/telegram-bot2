@@ -292,6 +292,27 @@ def add_partner_money(user_id: int, amount: int):
     conn.commit()
     conn.close()
 
+def apply_referral_bonus(user_id: int, duration: str):
+    referrer_id, ref_mode = get_referrer(user_id)
+
+    if not referrer_id:
+        return
+
+    if ref_mode == "free":
+        bonus = VIDEO_PRICES[duration]
+        give_balance(referrer_id, bonus)
+
+    if ref_mode == "money":
+        if duration == "5":
+            bonus = 50
+        elif duration == "10":
+            bonus = 100
+        else:
+            bonus = 0
+
+        if bonus > 0:
+            add_partner_money(referrer_id, bonus)
+
 
 def increment_free_used(user_id: int):
     conn = sqlite3.connect(DB_PATH)
