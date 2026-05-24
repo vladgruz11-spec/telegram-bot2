@@ -239,6 +239,58 @@ def give_balance(user_id: int, amount: int):
 
     conn.commit()
     conn.close()
+def set_referrer(user_id: int, referrer_id: int, ref_mode: str):
+    if user_id == referrer_id:
+        return
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute("SELECT referrer_id FROM users WHERE user_id = ?", (user_id,))
+    row = cur.fetchone()
+
+    if row and row[0]:
+        conn.close()
+        return
+
+    cur.execute(
+        "UPDATE users SET referrer_id = ?, ref_mode = ? WHERE user_id = ?",
+        (referrer_id, ref_mode, user_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def get_referrer(user_id: int):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT referrer_id, ref_mode FROM users WHERE user_id = ?",
+        (user_id,)
+    )
+
+    row = cur.fetchone()
+    conn.close()
+
+    if not row:
+        return 0, ""
+
+    return row[0] or 0, row[1] or ""
+
+
+def add_partner_money(user_id: int, amount: int):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "UPDATE users SET partner_balance = partner_balance + ? WHERE user_id = ?",
+        (amount, user_id)
+    )
+
+    conn.commit()
+    conn.close()
 
 
 def increment_free_used(user_id: int):
