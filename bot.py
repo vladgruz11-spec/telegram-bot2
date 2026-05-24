@@ -96,6 +96,7 @@ def inline_menu():
         [InlineKeyboardButton("💳 Пополнить баланс", callback_data="buy")],
         [InlineKeyboardButton("🎁 БЕСПЛАТНЫЕ генерации", callback_data="ref")],
         [InlineKeyboardButton("💸 ЗАРАБОТАТЬ с Тарантино", callback_data="earn")],
+        [InlineKeyboardButton("💼 Кабинет партнёра", callback_data="partner_profile")],
         [InlineKeyboardButton("🚀 Запустить бота", callback_data="start")],
         [InlineKeyboardButton("📘 Инструкция", callback_data="help")],
         [InlineKeyboardButton("👤 Мой баланс", callback_data="profile")],
