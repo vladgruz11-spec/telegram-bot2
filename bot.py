@@ -1069,8 +1069,24 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
     except Exception as e:
+    error_text = str(e).lower()
+
+    if (
+        "internal error" in error_text
+        or "try again later" in error_text
+        or "kie не смог" in error_text
+        or "timeout" in error_text
+    ):
         await update.message.reply_text(
-            f"❌ Ошибка генерации видео:\n\n{e}"
+            "⚠️ Нейросеть временно перегружена или не смогла обработать запрос.\n\n"
+            "Попробуй ещё раз через 1–2 минуты или немного измени описание видео."
+        )
+    else:
+        await update.message.reply_text(
+            "❌ Произошла ошибка генерации.\n\n"
+            "Если проблема повторяется — напиши в поддержку:\n"
+            "https://t.me/Vlad101ss",
+            disable_web_page_preview=True
         )
 
     user_states.pop(user_id, None)
