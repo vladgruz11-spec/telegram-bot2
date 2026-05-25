@@ -44,8 +44,8 @@ ADMIN_IDS = {
     6164104276
 }
 VIDEO_PRICES = {
-    "5": 99,
-    "10": 155,
+    "5": 98,
+    "10": 147,
 }
 def paid_menu():
     keyboard = [
@@ -81,9 +81,9 @@ def duration_menu_5_only():
     )
 def topup_menu():
     keyboard = [
-        ["💳 Пополнить баланс на 199 ₽"],
-        ["💳 Пополнить баланс на 399 ₽"],
-        ["💳 Пополнить баланс на 699 ₽"],
+        ["💳 Пополнить баланс на 196 ₽"],
+        ["💳 Пополнить баланс на 343 ₽"],
+        ["💳 Пополнить баланс на 490 ₽"],
         ["🚀 Запустить бота"]
     ]
 
@@ -558,7 +558,7 @@ async def give(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Используй:\n"
             "/give USER_ID СУММА\n\n"
             "Пример:\n"
-            "/give 123456789 99"
+            "/give 123456789 98"
         )
         return
 
@@ -586,7 +586,7 @@ async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "Используй:\n"
             "/giveuser @username СУММА\n\n"
             "Пример:\n"
-            "/giveuser @username 99"
+            "/giveuser @username 98"
         )
         return
 
@@ -721,8 +721,8 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text(
             "💳 Пополнение баланса:\n\n"
             "Стоимость генераций:\n"
-            "5 секунд — 99 ₽\n"
-            "10 секунд — 155 ₽\n"
+            "5 секунд — 98 ₽\n"
+            "10 секунд — 147 ₽\n"
             "Выбери сумму пополнения:",
             reply_markup=topup_menu()
         )
@@ -732,8 +732,8 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text(
             f"🎁 БЕСПЛАТНЫЕ генерации\n\n"
             f"Приглашай друзей и получай бонусы:\n"
-            f"• друг сделал платный ролик 5 сек — тебе +99 ₽ на баланс\n"
-            f"• друг сделал платный ролик 10 сек — тебе +155 ₽ на баланс\n\n"
+            f"• друг сделал платный ролик 5 сек — тебе +98 ₽ на баланс\n"
+            f"• друг сделал платный ролик 10 сек — тебе +147 ₽ на баланс\n\n"
             f"Твоя ссылка:\n"
             f"https://t.me/Tarantino2Bot?start=free_{user_id}"
         )
@@ -1095,8 +1095,8 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "💳 Пополнение баланса:\n\n"
         "Стоимость генераций:\n"
-        "5 секунд — 99 ₽\n"
-        "10 секунд — 155 ₽\n"
+        "5 секунд — 98 ₽\n"
+        "10 секунд — 147 ₽\n"
         "Выбери сумму пополнения:",
         reply_markup=topup_menu()
     )
