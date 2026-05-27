@@ -47,6 +47,7 @@ VIDEO_PRICES = {
     "5": 98,
     "10": 147,
 }
+TRIAL_PRICE = 40
 def paid_menu():
     keyboard = [
         ["💳 Пополнить баланс: /buy"],
