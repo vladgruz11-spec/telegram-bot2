@@ -833,9 +833,9 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     free_used, paid_credits = get_user(user_id)
 
-    if free_used >= 1 and paid_credits < VIDEO_PRICES["5"]:
+    if free_used < 1 and paid_credits < TRIAL_PRICE:
         await update.message.reply_text(
-            "💳Недостаточно средств для генерации.\n\n"
+            f"💳 Для пробной генерации нужно {TRIAL_PRICE} ₽.\n\n"
             "👇Пополнить баланс или получить БЕСПЛАТНО👇"
         )
 
