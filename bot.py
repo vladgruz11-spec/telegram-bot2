@@ -845,6 +845,18 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
+    if free_used >= 1 and paid_credits < VIDEO_PRICES["5"]:
+        await update.message.reply_text(
+            "💳Недостаточно средств для генерации.\n\n"
+            "👇Пополнить баланс или получить БЕСПЛАТНО👇"
+        )
+
+        await update.message.reply_text(
+            "Меню бота",
+            reply_markup=inline_menu()
+        )
+        return
+
     photo = update.message.photo[-1]
     file = await context.bot.get_file(photo.file_id)
 
