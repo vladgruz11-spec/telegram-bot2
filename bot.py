@@ -410,12 +410,16 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "happyhorse/image-to-video",
+    "model": "bytedance/seedance-2",
     "input": {
         "prompt": prompt,
-        "image_urls": [image_url],
+        "first_frame_url": image_url,
+        "return_last_frame": False,
+        "generate_audio": False,
         "resolution": "720p",
-        "duration": 5
+        "aspect_ratio": "9:16",
+        "duration": 5,
+        "web_search": False
     }
 }
 
