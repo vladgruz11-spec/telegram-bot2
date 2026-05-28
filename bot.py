@@ -422,6 +422,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     response = requests.post(url, headers=headers, json=payload, timeout=3600)
     response.raise_for_status()
     result = response.json()
+    print("KIE_CREATE_RESULT:", result, flush=True)
 
     if result.get("code") != 200:
         raise RuntimeError(f"Ошибка создания видео-задачи Kie: {result}")
