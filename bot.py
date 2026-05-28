@@ -402,7 +402,7 @@ def upload_image_to_kie(image_path: str) -> str:
 
 
 def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
-    url = "https://api.kie.ai/api/v1/veo/generate"
+    url = "https://api.kie.ai/api/v1/jobs/createTask"
 
     headers = {
         "Authorization": f"Bearer {KIE_API_KEY}",
@@ -410,19 +410,19 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "prompt": prompt,
-    "imageUrls": [image_url],
-    "model": "veo3_fast",
-    "aspect_ratio": "9:16",
-    "enableFallback": False,
-    "enableTranslation": True,
-    "generationType": "REFERENCE_2_VIDEO"
-}
+        "model": "wan/2-6-image-to-video",
+        "input": {
+            "prompt": prompt,
+            "image_urls": [image_url],
+            "duration": duration,
+            "resolution": "720p",
+            "nsfw_checker": False
+        }
+    }
 
     response = requests.post(url, headers=headers, json=payload, timeout=3600)
     response.raise_for_status()
     result = response.json()
-    print("KIE_CREATE_RESULT:", result, flush=True)
 
     if result.get("code") != 200:
         raise RuntimeError(f"Ошибка создания видео-задачи Kie: {result}")
@@ -431,7 +431,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
 
 
 def wait_kie_video_result(task_id: str) -> str:
-    url = "https://api.kie.ai/api/v1/veo/record-info"
+    url = "https://api.kie.ai/api/v1/jobs/recordInfo"
 
     headers = {
         "Authorization": f"Bearer {KIE_API_KEY}"
@@ -447,87 +447,31 @@ def wait_kie_video_result(task_id: str) -> str:
             )
             response.raise_for_status()
             result = response.json()
-            print("KIE_STATUS_RESULT:", result, flush=True)
         except requests.exceptions.Timeout:
             time.sleep(10)
             continue
 
         data = result.get("data", {})
+        state = data.get("state")
 
-        state = (
-            data.get("state")
-            or data.get("status")
-            or data.get("taskStatus")
-        )
-        success_flag = data.get("successFlag")
-
-        if success_flag == 0:
-            time.sleep(10)
-            continue
-
-        if success_flag == 1:
-            response_raw = data.get("response")
-
-            if not response_raw:
-                raise RuntimeError(f"Видео готово, но response пустой: {data}")
-
-            response_data = json.loads(response_raw)
+        if state == "success":
+            result_json_raw = data.get("resultJson")
+            result_json = json.loads(result_json_raw)
 
             video_urls = (
-                response_data.get("resultUrls")
-                or response_data.get("videoUrls")
-                or response_data.get("videos")
-                or response_data.get("urls")
+                result_json.get("resultUrls")
+                or result_json.get("videoUrls")
+                or result_json.get("videos")
                 or []
             )
 
             if not video_urls:
-                video_url = (
-                    response_data.get("videoUrl")
-                    or response_data.get("video_url")
-                    or response_data.get("url")
-                    or response_data.get("resultUrl")
-                )
-
-                if video_url:
-                    return video_url
-
-                raise RuntimeError(f"Видео готово, но ссылка не найдена: {response_data}")
+                raise RuntimeError(f"Видео готово, но ссылка не найдена: {result_json}")
 
             return video_urls[0]
 
-        if success_flag in [2, 3]:
-            raise RuntimeError(f"Kie не смог сгенерировать видео: {data}")
-
-        if state in ["success", "succeeded", "completed"]:
-            video_url = (
-                data.get("videoUrl")
-                or data.get("video_url")
-                or data.get("url")
-                or data.get("resultUrl")
-            )
-
-            if not video_url:
-                result_json_raw = data.get("resultJson")
-                if result_json_raw:
-                    result_json = json.loads(result_json_raw)
-
-                    video_urls = (
-                        result_json.get("resultUrls")
-                        or result_json.get("videoUrls")
-                        or result_json.get("videos")
-                        or []
-                    )
-
-                    if video_urls:
-                        return video_urls[0]
-
-                raise RuntimeError(f"Видео готово, но ссылка не найдена: {data}")
-
-            return video_url
-
-        if state in ["fail", "failed", "error"]:
-            raise RuntimeError(f"Kie не смог сгенерировать видео: {data}")
+        if state == "fail":
+            raise RuntimeError(f"Kie не смог сгенерировать видео: {data.get('failMsg')}")
 
         time.sleep(10)
 
@@ -1157,7 +1101,10 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         else:
             await update.message.reply_text(
-                f"❌ Техническая ошибка:\n\n{e}"
+                "❌ Произошла ошибка генерации.\n\n"
+                "Если проблема повторяется — напиши в поддержку:\n"
+                "https://t.me/Vlad101ss",
+                disable_web_page_preview=True
             )
 
     user_states.pop(user_id, None)
