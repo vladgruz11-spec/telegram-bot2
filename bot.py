@@ -410,11 +410,12 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "bytedance/seedance-1.5-pro",
+    "model": "bytedance/v1-pro-fast-image-to-video",
     "input": {
         "prompt": prompt,
-        "first_frame_url": image_url,
-        "duration": duration
+        "image_urls": [image_url],
+        "duration": duration,
+        "resolution": "720p"
     }
 }
 
