@@ -413,7 +413,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     "model": "kling-2.6/image-to-video",
     "input": {
         "prompt": prompt,
-        "image": image_url,
+        "image_url": image_url,
         "duration": int(duration),
         "aspect_ratio": "1:1",
         "sound": False
