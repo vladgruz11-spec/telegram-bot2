@@ -415,7 +415,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
         "prompt": prompt,
         "negative_prompt": "blurry, flicker, low quality, distorted",
         "first_frame_url": image_url,
-        "resolution": "1080p",
+        "resolution": "720p",
         "duration": 5,
         "prompt_extend": True,
         "watermark": False
