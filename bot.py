@@ -410,7 +410,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "seedance/image-to-video",
+    "model": "seedance-1.5-pro/image-to-video",
     "input": {
         "prompt": prompt,
         "image_urls": [image_url],
