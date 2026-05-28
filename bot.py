@@ -410,12 +410,12 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "wan/2-7-text-to-video",
+    "model": "wan/2-7-image-to-video",
     "input": {
         "prompt": prompt,
-        "negative_prompt": "blurry, low quality, flicker, distorted characters",
+        "negative_prompt": "blurry, flicker, low quality, distorted",
+        "first_frame_url": image_url,
         "resolution": "1080p",
-        "ratio": "9:16",
         "duration": 5,
         "prompt_extend": True,
         "watermark": False
