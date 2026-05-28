@@ -410,12 +410,11 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "bytedance/v1-pro-fast-image-to-video",
+    "model": "hailuo/standard-image-to-video",
     "input": {
         "prompt": prompt,
         "image_urls": [image_url],
-        "duration": duration,
-        "resolution": "720p"
+        "duration": duration
     }
 }
 
