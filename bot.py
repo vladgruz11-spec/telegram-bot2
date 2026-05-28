@@ -410,15 +410,16 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "kling-3.0/video",
+    "model": "bytedance/seedance-1.5-pro",
     "input": {
         "prompt": prompt,
-        "image_urls": [image_url],
-        "sound": False,
-        "duration": "5",
+        "input_urls": [image_url],
         "aspect_ratio": "9:16",
-        "mode": "pro",
-        "multi_shots": False
+        "resolution": "720p",
+        "duration": "5",
+        "fixed_lens": False,
+        "generate_audio": False,
+        "nsfw_checker": False
     }
 }
 
