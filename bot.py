@@ -410,11 +410,11 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "hailuo-2.3/standard-image-to-video",
+    "model": "gemini-omni-video",
     "input": {
         "prompt": prompt,
         "image_urls": [image_url],
-        "duration": duration
+        "duration": "4"
     }
 }
 
