@@ -410,7 +410,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "hailuo/standard-image-to-video",
+    "model": "hailuo-2.3/standard-image-to-video",
     "input": {
         "prompt": prompt,
         "image_urls": [image_url],
