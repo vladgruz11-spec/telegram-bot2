@@ -402,7 +402,7 @@ def upload_image_to_kie(image_path: str) -> str:
 
 
 def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
-    url = "https://api.kie.ai/api/v1/jobs/createTask"
+    url = "https://api.kie.ai/api/v1/veo/generate"
 
     headers = {
         "Authorization": f"Bearer {KIE_API_KEY}",
@@ -410,13 +410,13 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "hailuo/2-3-image-to-video-pro",
-    "input": {
-        "prompt": prompt,
-        "image_url": image_url,
-        "duration": "6",
-        "resolution": "768P"
-    }
+    "prompt": prompt,
+    "imageUrls": [image_url],
+    "model": "veo3_fast",
+    "aspect_ratio": "9:16",
+    "enableFallback": False,
+    "enableTranslation": True,
+    "generationType": "REFERENCE_2_VIDEO"
 }
 
     response = requests.post(url, headers=headers, json=payload, timeout=3600)
