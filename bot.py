@@ -416,7 +416,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
         "input_urls": [image_url],
         "aspect_ratio": "9:16",
         "resolution": "720p",
-        "duration": "5",
+        "duration": "8",
         "fixed_lens": False,
         "generate_audio": False,
         "nsfw_checker": False
