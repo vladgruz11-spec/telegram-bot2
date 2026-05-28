@@ -459,6 +459,45 @@ def wait_kie_video_result(task_id: str) -> str:
             or data.get("status")
             or data.get("taskStatus")
         )
+        success_flag = data.get("successFlag")
+
+        if success_flag == 0:
+            time.sleep(10)
+            continue
+
+        if success_flag == 1:
+            response_raw = data.get("response")
+
+            if not response_raw:
+                raise RuntimeError(f"Видео готово, но response пустой: {data}")
+
+            response_data = json.loads(response_raw)
+
+            video_urls = (
+                response_data.get("resultUrls")
+                or response_data.get("videoUrls")
+                or response_data.get("videos")
+                or response_data.get("urls")
+                or []
+            )
+
+            if not video_urls:
+                video_url = (
+                    response_data.get("videoUrl")
+                    or response_data.get("video_url")
+                    or response_data.get("url")
+                    or response_data.get("resultUrl")
+                )
+
+                if video_url:
+                    return video_url
+
+                raise RuntimeError(f"Видео готово, но ссылка не найдена: {response_data}")
+
+            return video_urls[0]
+
+        if success_flag in [2, 3]:
+            raise RuntimeError(f"Kie не смог сгенерировать видео: {data}")
 
         if state in ["success", "succeeded", "completed"]:
             video_url = (
