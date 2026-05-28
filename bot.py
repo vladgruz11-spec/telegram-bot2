@@ -410,12 +410,15 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "gemini-omni-video",
+    "model": "wan/2-7-text-to-video",
     "input": {
         "prompt": prompt,
-        "image_urls": [image_url],
-        "duration": "4",
-        "aspect_ratio": "9:16"
+        "negative_prompt": "blurry, low quality, flicker, distorted characters",
+        "resolution": "1080p",
+        "ratio": "9:16",
+        "duration": 5,
+        "prompt_extend": True,
+        "watermark": False
     }
 }
 
