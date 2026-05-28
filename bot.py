@@ -413,7 +413,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     "model": "bytedance/seedance-1.5-pro",
     "input": {
         "prompt": prompt,
-        "input_urls": [image_url],
+        "first_frame_url": image_url,
         "duration": duration
     }
 }
