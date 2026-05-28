@@ -410,14 +410,12 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "grok-imagine/image-to-video",
+    "model": "hailuo/2-3-image-to-video-standard",
     "input": {
-        "image_urls": [image_url],
         "prompt": prompt,
-        "mode": "normal",
+        "image_url": image_url,
         "duration": "6",
-        "resolution": "480p",
-        "aspect_ratio": "9:16"
+        "resolution": "768P"
     }
 }
 
