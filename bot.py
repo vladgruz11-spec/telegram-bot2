@@ -410,7 +410,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "bytedance/seedance-2",
+    "model": "bytedance/seedance-2-fast",
     "input": {
         "prompt": prompt,
         "first_frame_url": image_url,
