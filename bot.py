@@ -1101,10 +1101,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         else:
             await update.message.reply_text(
-                "❌ Произошла ошибка генерации.\n\n"
-                "Если проблема повторяется — напиши в поддержку:\n"
-                "https://t.me/Vlad101ss",
-                disable_web_page_preview=True
+                f"❌ Техническая ошибка:\n\n{e}"
             )
 
     user_states.pop(user_id, None)
