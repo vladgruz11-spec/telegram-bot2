@@ -410,13 +410,14 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "bytedance/v1-pro-fast-image-to-video",
+    "model": "grok-imagine/image-to-video",
     "input": {
+        "image_urls": [image_url],
         "prompt": prompt,
-        "image_url": image_url,
-        "resolution": "720p",
-        "duration": "5",
-        "nsfw_checker": False
+        "mode": "normal",
+        "duration": "6",
+        "resolution": "480p",
+        "aspect_ratio": "9:16"
     }
 }
 
