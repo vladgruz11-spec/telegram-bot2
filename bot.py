@@ -408,15 +408,19 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-        "model": "wan/2-6-image-to-video",
-        "input": {
-            "prompt": prompt,
-            "image_urls": [image_url],
-            "duration": duration,
-            "resolution": "720p",
-            "nsfw_checker": False
-        }
+    "model": "bytedance/seedance-2",
+    "input": {
+        "prompt": prompt,
+        "first_frame_url": image_url,
+        "return_last_frame": False,
+        "generate_audio": False,
+        "resolution": "480p",
+        "aspect_ratio": "16:9",
+        "duration": int(duration),
+        "web_search": False,
+        "nsfw_checker": False
     }
+}
 
     response = requests.post(url, headers=headers, json=payload, timeout=3600)
     response.raise_for_status()
