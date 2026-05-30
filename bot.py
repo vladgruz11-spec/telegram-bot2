@@ -408,16 +408,15 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-        "model": "wan/2-6-image-to-video",
-        "input": {
-            "prompt": prompt,
-            "image_urls": [image_url],
-            "duration": duration,
-            "resolution": "720p",
-            "nsfw_checker": False,
-            "generate_audio": False
-        }
+    "model": "wan/2-2-i2v-plus",
+    "input": {
+        "prompt": prompt,
+        "image_urls": [image_url],
+        "duration": int(duration),
+        "resolution": "480p",
+        "generate_audio": False
     }
+}
 
     response = requests.post(url, headers=headers, json=payload, timeout=3600)
     response.raise_for_status()
