@@ -96,7 +96,7 @@ def inline_menu():
     keyboard = [
         [InlineKeyboardButton("💳 Пополнить баланс", callback_data="buy")],
         [InlineKeyboardButton("🎁 БЕСПЛАТНЫЕ генерации", callback_data="ref")],
-        [InlineKeyboardButton("💸 ЗАРАБОТАТЬ с Тарантино", callback_data="earn")],
+        [InlineKeyboardButton("💸 ЗАРАБОТАТЬ с Xena", callback_data="earn")],
         [InlineKeyboardButton("💼 Кабинет партнёра", callback_data="partner_profile")],
         [InlineKeyboardButton("🚀 Запустить бота", callback_data="start")],
         [InlineKeyboardButton("📘 Инструкция", callback_data="help")],
@@ -742,7 +742,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if action == "earn":
         await query.message.reply_text(
-            f"💸 ЗАРАБОТАТЬ с Тарантино\n\n"
+            f"💸 ЗАРАБОТАТЬ с Xena\n\n"
             f"Приглашай людей и получай деньги на партнёрский счёт:\n"
             f"• за платную генерацию 5 сек — 50 ₽\n"
             f"• за платную генерацию 10 сек — 100 ₽\n\n"
