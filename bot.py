@@ -505,7 +505,7 @@ def create_yookassa_payment(user_id: int, amount: int) -> str:
         "capture": True,
         "confirmation": {
             "type": "redirect",
-            "return_url": "https://t.me/Tarantino2Bot"
+            "return_url": "https://t.me/Xena18Bot"
         },
         "description": f"Пополнение баланса Telegram-бота на {amount} рублей",
         "metadata": {
@@ -736,7 +736,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"• друг сделал платный ролик 5 сек — тебе +98 ₽ на баланс\n"
             f"• друг сделал платный ролик 10 сек — тебе +147 ₽ на баланс\n\n"
             f"Твоя ссылка:\n"
-            f"https://t.me/Tarantino2Bot?start=free_{user_id}"
+            f"https://t.me/Xena18Bot?start=free_{user_id}"
         )
         return
 
@@ -747,7 +747,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"• за платную генерацию 5 сек — 50 ₽\n"
             f"• за платную генерацию 10 сек — 100 ₽\n\n"
             f"Твоя ссылка:\n"
-            f"https://t.me/Tarantino2Bot?start=money_{user_id}"
+            f"https://t.me/Xena18Bot?start=money_{user_id}"
         )
         return
 
