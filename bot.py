@@ -865,9 +865,6 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_states[user_id] = {"image_path": str(image_path)}
 
-    if free_used < 1:
-        user_states[user_id]["duration"] = "5"
-
         await update.message.reply_text(
             "✅ Картинку получил.\n\n"
             "Теперь отправь описание видео."
