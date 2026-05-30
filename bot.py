@@ -865,11 +865,6 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_states[user_id] = {"image_path": str(image_path)}
 
-        await update.message.reply_text(
-            "✅ Картинку получил.\n\n"
-            "Теперь отправь описание видео."
-        )
-        return
 
     if paid_credits < VIDEO_PRICES["10"]:
         await update.message.reply_text(
