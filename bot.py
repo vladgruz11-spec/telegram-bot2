@@ -1075,6 +1075,10 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
     except Exception as e:
+        import traceback
+        print("GENERATION_ERROR:", repr(e))
+        traceback.print_exc()
+
         error_text = str(e).lower()
 
         if (
