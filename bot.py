@@ -411,7 +411,9 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     "model": "bytedance/seedance-2",
     "input": {
         "prompt": prompt,
-        "first_frame_url": image_url,
+        "reference_image_urls": [
+            image_url
+        ],
         "reference_video_urls": [
             "https://tempfileb.aiquickdraw.com/kieai/market/1780143935010_aU11915V.mp4"
         ],
