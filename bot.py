@@ -818,7 +818,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             set_referrer(user_id, referrer_id, "money")
     
     await update.message.reply_text(
-        "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/Tarantino2Baza, чтобы нас не потерять, если бота заблокируют!\n\n"
+        "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/Xena18H, чтобы нас не потерять, если бота заблокируют!\n\n"
         "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО",
         disable_web_page_preview=True
     )
