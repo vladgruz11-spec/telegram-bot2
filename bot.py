@@ -1006,10 +1006,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     image_path = user_states[user_id]["image_path"]
     duration = user_states[user_id]["duration"]
-    if free_used < 1:
-        video_cost = TRIAL_PRICE
-    else:
-        video_cost = VIDEO_PRICES[duration]
+    video_cost = VIDEO_PRICES[duration]
 
     if free_used >= 1 and paid_credits < video_cost:
         await update.message.reply_text(
