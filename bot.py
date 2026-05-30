@@ -408,21 +408,17 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "bytedance/seedance-2",
+    "model": "bytedance/seedance-1.5-pro",
     "input": {
         "prompt": prompt,
-        "reference_image_urls": [
+        "input_urls": [
             image_url
         ],
-        "reference_video_urls": [
-            "https://tempfileb.aiquickdraw.com/kieai/market/1780145210952_leABpfT8.mp4"
-        ],
-        "return_last_frame": False,
-        "generate_audio": False,
-        "resolution": "480p",
         "aspect_ratio": "9:16",
-        "duration": int(duration),
-        "web_search": False,
+        "resolution": "480p",
+        "duration": duration,
+        "fixed_lens": False,
+        "generate_audio": False,
         "nsfw_checker": False
     }
 }
