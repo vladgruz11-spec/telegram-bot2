@@ -415,6 +415,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
             "duration": duration,
             "resolution": "720p",
             "nsfw_checker": False
+            "generate_audio": False,
         }
     }
 
