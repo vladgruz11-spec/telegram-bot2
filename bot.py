@@ -1096,7 +1096,6 @@ async def buy(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "💳 Пополнение баланса:\n\n"
         "Стоимость генераций:\n"
-        "Пробная 5 секунд — 40 ₽\n"
         "5 секунд — 98 ₽\n"
         "10 секунд — 147 ₽\n"
         "Выбери сумму пополнения:",
