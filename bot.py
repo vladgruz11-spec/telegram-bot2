@@ -412,9 +412,6 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     "input": {
         "prompt": prompt,
         "first_frame_url": image_url,
-        "reference_video_urls": [
-            "https://tempfileb.aiquickdraw.com/kieai/market/1780140018700_XWnJqBOO.mp4"
-        ],
         "return_last_frame": False,
         "generate_audio": False,
         "resolution": "480p",
