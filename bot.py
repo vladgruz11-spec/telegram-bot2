@@ -415,7 +415,7 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
             image_url
         ],
         "reference_video_urls": [
-            "https://tempfileb.aiquickdraw.com/kieai/market/1780143935010_aU11915V.mp4"
+            "https://tempfileb.aiquickdraw.com/kieai/market/1780145210952_leABpfT8.mp4"
         ],
         "return_last_frame": False,
         "generate_audio": False,
