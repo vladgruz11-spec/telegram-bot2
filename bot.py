@@ -1224,6 +1224,7 @@ def main():
     app.add_handler(CommandHandler("myid", myid))
     app.add_handler(CommandHandler("give", give))
     app.add_handler(CommandHandler("giveuser", giveuser))
+    app.add_handler(CommandHandler("statsuser", statsuser))
     app.add_handler(CommandHandler("partners", partners))
     app.add_handler(CommandHandler("paypartner", paypartner))
     app.add_handler(CallbackQueryHandler(menu_button))
