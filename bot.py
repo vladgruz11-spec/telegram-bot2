@@ -116,6 +116,14 @@ def style_action_menu(style_id: str):
     return InlineKeyboardMarkup(keyboard)
 
 
+def first_intro_menu():
+    keyboard = [
+        [InlineKeyboardButton("📘 Открыть инструкцию", callback_data="open_first_instruction")],
+        [InlineKeyboardButton("✅ Ознакомился", callback_data="intro_understood")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
 def understood_menu(callback_data: str):
     keyboard = [
         [InlineKeyboardButton("✅ Ознакомился", callback_data=callback_data)]
