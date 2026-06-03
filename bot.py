@@ -1316,7 +1316,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("🎁 Реферальную программу подключим следующим этапом.")
         return
 
-    if prompt == "🚀 Запустить бота":
+    if prompt == "🏠 Главное меню":
         await menu(update, context)
         return
 
