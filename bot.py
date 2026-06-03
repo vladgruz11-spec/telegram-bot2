@@ -1149,8 +1149,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_main_menu_message(update.message)
         return
 
-    await update.message.reply_text(
-        "📘 Перед тем как начать, ознакомьтесь с инструкцией!",
+    await update.message.reply_photo(
+        photo=INSTRUCTION_PHOTO,
+        caption="📘 Перед тем как начать, ознакомьтесь с инструкцией!",
         reply_markup=first_intro_menu()
     )
 
