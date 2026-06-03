@@ -893,7 +893,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = query.from_user.id
     action = query.data
 
-    if action == "intro_understood":
+        if action == "open_first_instruction":
         try:
             await query.message.delete()
         except Exception:
@@ -901,14 +901,31 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await query.message.chat.send_message(
             "📘 Инструкция:\n\n"
-            "1️⃣ Выбери режим генерации.\n"
-            "2️⃣ Отправь фото хорошего качества.\n"
-            "3️⃣ Выбери длительность видео: 5 или 10 секунд.\n"
-            "4️⃣ Дождись результата.\n\n"
-            "⚠️ Важно:\n"
-            "Используй только изображения, на которые у тебя есть права и разрешение.",
+            "Бот Xena создает AI-видео с участием человека, фото которого вы отправите.\n"
+            "1. Нажмите СТАРТ.\n"
+            "2. В Главном Меню нажмите кнопку 🎬 ВИДЕО.\n"
+            "3. Выберите, что хотите увидеть в ролике.\n"
+            "Можете выбрать из списка, либо создать генерацию в СВОБОДНОМ СТИЛЕ.\n"
+            "4. Выберите длительность видео.\n"
+            "5. Если на балансе не хватает средств, нажмите 💳 Пополнить баланс.\n"
+            "6. Отправьте фото.\n"
+            "7. Дождитесь окончания генерации.\n"
+            "8. Получите готовый AI-ролик.\n\n"
+            "⚠️ ВНИМАНИЕ\n"
+            "Нажимая старт, вы соглашаетесь с правилами использования бота.\n"
+            "Запрещается использовать бот для создания или распространения контента, нарушающего законодательство или права третьих лиц.",
             reply_markup=understood_menu("instruction_understood")
         )
+        return
+
+    if action == "intro_understood":
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+        set_instruction_seen(user_id)
+        await send_main_menu_message(query.message)
         return
 
     if action == "instruction_understood":
