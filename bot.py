@@ -982,8 +982,8 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception:
             pass
 
-        await query.message.chat.send_animation(
-            animation=GIF_0_URL,
+        await query.message.chat.send_photo(
+            photo=DEMO_MENU_PHOTO,
             caption="🎬 Выбери, что мне сделать с фото:",
             reply_markup=video_inline_menu()
         )
