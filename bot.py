@@ -408,15 +408,14 @@ def create_kie_video_task(image_url: str, prompt: str, duration: str) -> str:
     }
 
     payload = {
-    "model": "grok-imagine-video-1-5-preview",
+    "model": "wan/2-6-image-to-video",
     "input": {
         "prompt": prompt,
-        "image_urls": [
-            image_url
-        ],
-        "aspect_ratio": "9:16",
-        "resolution": "480p",
-        "duration": int(duration)
+        "image_urls": [image_url],
+        "duration": duration,
+        "resolution": "720p",
+        "nsfw_checker": False,
+        "generate_audio": False
     }
 }
 
