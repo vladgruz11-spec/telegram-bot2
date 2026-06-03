@@ -74,6 +74,62 @@ INSTRUCTION_URL = "ССЫЛКА_НА_ИНСТРУКЦИЮ"
 EXAMPLES_CHANNEL_URL = "ССЫЛКА_НА_КАНАЛ_С_ПРИМЕРАМИ"
 MAIN_CHANNEL_URL = "https://t.me/Xena18H"
 
+def main_inline_menu():
+    keyboard = [
+        [InlineKeyboardButton("🎬 ВИДЕО", callback_data="video_menu")],
+        [InlineKeyboardButton("💳 Пополнить баланс", callback_data="buy")],
+        [InlineKeyboardButton("👤 Мой баланс", callback_data="profile")],
+        [InlineKeyboardButton("📘 Инструкция", callback_data="help")],
+        [InlineKeyboardButton("🎁 БЕСПЛАТНЫЕ генерации", callback_data="ref")],
+        [InlineKeyboardButton("💸 ЗАРАБОТАТЬ с Xena", callback_data="earn")],
+        [InlineKeyboardButton("💼 Кабинет партнёра", callback_data="partner_profile")],
+        [InlineKeyboardButton("🆘 Связаться с поддержкой", url="https://t.me/Vlad101ss")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def video_inline_menu():
+    keyboard = [
+        [
+            InlineKeyboardButton("1", callback_data="style_1"),
+            InlineKeyboardButton("2", callback_data="style_2"),
+            InlineKeyboardButton("3", callback_data="style_3"),
+        ],
+        [
+            InlineKeyboardButton("4", callback_data="style_4"),
+            InlineKeyboardButton("5", callback_data="style_5"),
+            InlineKeyboardButton("6", callback_data="style_6"),
+        ],
+        [
+            InlineKeyboardButton("7", callback_data="style_7"),
+        ],
+        [InlineKeyboardButton("🎨 СВОБОДНЫЙ СТИЛЬ", callback_data="free_style")],
+        [InlineKeyboardButton("🏠 ГЛАВНОЕ МЕНЮ", callback_data="main_menu")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def style_action_menu(style_id: str):
+    keyboard = [
+        [InlineKeyboardButton("🎬 Оживить своё фото", callback_data=f"animate_style_{style_id}")],
+        [InlineKeyboardButton("⬅️ Назад", callback_data="video_menu")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def understood_menu(callback_data: str):
+    keyboard = [
+        [InlineKeyboardButton("✅ Ознакомился", callback_data=callback_data)]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def after_generation_menu():
+    keyboard = [
+        [InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
 def paid_menu():
     keyboard = [
         ["💳 Пополнить баланс: /buy"],
