@@ -1026,7 +1026,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if action == "start":
-        await start(query, context)
+        await send_main_menu_message(query.message)
         return
 
     if action == "help":
