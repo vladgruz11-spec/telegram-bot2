@@ -154,6 +154,15 @@ def init_db():
         cur.execute("ALTER TABLE users ADD COLUMN partner_balance INTEGER DEFAULT 0")
     except sqlite3.OperationalError:
         pass
+    try:
+        cur.execute("ALTER TABLE users ADD COLUMN generations_count INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass
+
+    try:
+        cur.execute("ALTER TABLE users ADD COLUMN spent_total INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass
 
     conn.commit()
     conn.close()
