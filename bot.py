@@ -371,7 +371,23 @@ def reset_partner_balance(user_id: int):
     conn.commit()
     conn.close()
 
+def add_generation_stats(user_id: int, cost: int):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
 
+    cur.execute(
+        """
+        UPDATE users
+        SET generations_count = generations_count + 1,
+            spent_total = spent_total + ?
+        WHERE user_id = ?
+        """,
+        (cost, user_id)
+    )
+
+    conn.commit()
+    conn.close()
+    
 def increment_free_used(user_id: int):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
