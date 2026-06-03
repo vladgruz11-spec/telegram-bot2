@@ -191,6 +191,14 @@ def style_action_menu(style_id: str):
     return InlineKeyboardMarkup(keyboard)
 
 
+def free_style_action_menu():
+    keyboard = [
+        [InlineKeyboardButton("🎬 Оживить своё фото", callback_data="animate_free_style")],
+        [InlineKeyboardButton("⬅️ Назад", callback_data="video_menu")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
 def first_intro_menu():
     keyboard = [
         [InlineKeyboardButton("📘 Открыть инструкцию", callback_data="open_first_instruction")],
