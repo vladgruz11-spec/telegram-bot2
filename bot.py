@@ -673,11 +673,20 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int, durati
     video_path = download_video(video_url, user_id)
     return video_path
 
-async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(
-        "Меню бота",
-        reply_markup=inline_menu()
+async def send_main_menu_message(message):
+    await message.reply_photo(
+        photo=PHOTO_1_URL,
+        caption=(
+            "🏠 Главное меню\n\n"
+            f"1️⃣ Подпишись, чтобы нас не потерять:\n{MAIN_CHANNEL_URL}\n\n"
+            f"2️⃣ Примеры генераций:\n{EXAMPLES_CHANNEL_URL}"
+        ),
+        reply_markup=main_inline_menu()
     )
+
+
+async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await send_main_menu_message(update.message)
 
 async def myid(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
