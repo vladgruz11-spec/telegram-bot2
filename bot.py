@@ -70,7 +70,6 @@ STYLE_PROMPTS = {
     "7": "ПРОМТ 7",
 }
 
-INSTRUCTION_URL = "ССЫЛКА_НА_ИНСТРУКЦИЮ"
 EXAMPLES_CHANNEL_URL = "ССЫЛКА_НА_КАНАЛ_С_ПРИМЕРАМИ"
 MAIN_CHANNEL_URL = "https://t.me/Xena18H"
 
