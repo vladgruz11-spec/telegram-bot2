@@ -280,6 +280,33 @@ def get_user(user_id: int):
     conn.close()
     return free_used, paid_credits
 
+def has_seen_instruction(user_id: int) -> bool:
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT instruction_seen FROM users WHERE user_id = ?",
+        (user_id,)
+    )
+
+    row = cur.fetchone()
+    conn.close()
+
+    return bool(row and row[0])
+
+
+def set_instruction_seen(user_id: int):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "UPDATE users SET instruction_seen = 1 WHERE user_id = ?",
+        (user_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
 
 def save_username(user_id: int, username):
     if not username:
