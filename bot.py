@@ -68,6 +68,50 @@ PROMPT_DRINK_JUICE = """
 PROMPT_EAT_APPLE = """
 ПРОМТ 7
 """
+STYLE_DATA = {
+    "wave_hand": {
+        "title": "машет рукой",
+        "button": "👋 Машет рукой",
+        "video": WAVE_HAND_VIDEO,
+        "prompt": PROMPT_WAVE_HAND
+    },
+    "eat_ice_cream": {
+        "title": "ест мороженое",
+        "button": "🍦 Ест мороженое",
+        "video": EAT_ICE_CREAM_VIDEO,
+        "prompt": PROMPT_EAT_ICE_CREAM
+    },
+    "dance": {
+        "title": "танцует",
+        "button": "💃 Танцует",
+        "video": DANCE_VIDEO,
+        "prompt": PROMPT_DANCE
+    },
+    "jump": {
+        "title": "прыгает",
+        "button": "🤸 Прыгает",
+        "video": JUMP_VIDEO,
+        "prompt": PROMPT_JUMP
+    },
+    "chop_wood": {
+        "title": "рубит дрова",
+        "button": "🪓 Рубит дрова",
+        "video": CHOP_WOOD_VIDEO,
+        "prompt": PROMPT_CHOP_WOOD
+    },
+    "drink_juice": {
+        "title": "пьёт сок",
+        "button": "🧃 Пьёт сок",
+        "video": DRINK_JUICE_VIDEO,
+        "prompt": PROMPT_DRINK_JUICE
+    },
+    "eat_apple": {
+        "title": "ест яблоко",
+        "button": "🍎 Ест яблоко",
+        "video": EAT_APPLE_VIDEO,
+        "prompt": PROMPT_EAT_APPLE
+    },
+}
 
 YOOKASSA_SHOP_ID = os.getenv("YOOKASSA_SHOP_ID")
 YOOKASSA_SECRET_KEY = os.getenv("YOOKASSA_SECRET_KEY")
