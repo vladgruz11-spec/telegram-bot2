@@ -767,8 +767,7 @@ async def send_main_menu_message(message):
     await message.reply_photo(
         photo=MAIN_MENU_PHOTO,
         caption=(
-            "🏠 Главное меню\n\n"
-            f"1️⃣ Подпишись, чтобы нас не потерять:\n{MAIN_CHANNEL_URL}\n\n"
+            f"1️⃣ Подпишись на канал:\n{MAIN_CHANNEL_URL} чтобы нас не потерять, если бота заблокируют!\n\n"
             f"2️⃣ Примеры генераций:\n{EXAMPLES_CHANNEL_URL}"
         ),
         reply_markup=main_inline_menu()
