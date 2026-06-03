@@ -1026,15 +1026,16 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if ref_code.startswith("money_"):
             referrer_id = int(ref_code.replace("money_", ""))
             set_referrer(user_id, referrer_id, "money")
-    
-    await update.message.reply_text(
-        "Шаг 1: Перед тем как начать, подпишись на канал https://t.me/Xena18H, чтобы нас не потерять, если бота заблокируют!\n\n"
-        "Затем возвращайся, и приступим к СОЗДАНИЮ ВИДЕО",
-        disable_web_page_preview=True
-    )
+
+    if has_seen_instruction(user_id):
+        await send_main_menu_message(update.message)
+        return
 
     await update.message.reply_text(
-        "Шаг 2: отправь мне картинку, которую хочешь оживить!"
+        f"📘 Перед тем как начать, ознакомьтесь с инструкцией!\n\n"
+        f"👉 {INSTRUCTION_URL}",
+        disable_web_page_preview=True,
+        reply_markup=understood_menu("intro_understood")
     )
 
 
