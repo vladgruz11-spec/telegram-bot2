@@ -18,6 +18,56 @@ from telegram.ext import (
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 KIE_API_KEY = os.getenv("KIE_API_KEY")
+INSTRUCTION_PHOTO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/instruction.jpg"
+
+MAIN_MENU_PHOTO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/main_menu.jpg"
+
+DEMO_MENU_PHOTO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/demo_menu.jpg"
+
+FREE_STYLE_PHOTO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/free_style.jpg"
+
+
+WAVE_HAND_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/wave_hand.mp4"
+
+EAT_ICE_CREAM_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/eat_ice_cream.mp4"
+
+DANCE_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/dance.mp4"
+
+JUMP_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/jump.mp4"
+
+CHOP_WOOD_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/chop_wood.mp4"
+
+DRINK_JUICE_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/drink_juice.mp4"
+
+EAT_APPLE_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/eat_apple.mp4"
+
+PROMPT_WAVE_HAND = """
+ПРОМТ 1
+"""
+
+PROMPT_EAT_ICE_CREAM = """
+ПРОМТ 2
+"""
+
+PROMPT_DANCE = """
+ПРОМТ 3
+"""
+
+PROMPT_JUMP = """
+ПРОМТ 4
+"""
+
+PROMPT_CHOP_WOOD = """
+ПРОМТ 5
+"""
+
+PROMPT_DRINK_JUICE = """
+ПРОМТ 6
+"""
+
+PROMPT_EAT_APPLE = """
+ПРОМТ 7
+"""
 
 YOOKASSA_SHOP_ID = os.getenv("YOOKASSA_SHOP_ID")
 YOOKASSA_SECRET_KEY = os.getenv("YOOKASSA_SECRET_KEY")
