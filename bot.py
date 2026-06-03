@@ -1043,7 +1043,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-        if action.startswith("style_"):
+    if action.startswith("style_"):
         style_id = action.replace("style_", "")
         style = STYLE_DATA[style_id]
 
