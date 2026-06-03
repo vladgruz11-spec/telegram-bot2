@@ -600,6 +600,56 @@ async def give(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"✅ Пользователю {target_id} выдано {amount} ₽"
     )
+async def statsuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    admin_id = update.message.from_user.id
+
+    if admin_id not in ADMIN_IDS:
+        await update.message.reply_text("❌ Нет доступа.")
+        return
+
+    if len(context.args) != 1:
+        await update.message.reply_text(
+            "Используй:\n"
+            "/statsuser @username\n\n"
+            "Пример:\n"
+            "/statsuser @username"
+        )
+        return
+
+    username = context.args[0].replace("@", "").lower()
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT user_id, username, paid_credits, generations_count, spent_total
+        FROM users
+        WHERE username = ?
+        """,
+        (username,)
+    )
+
+    row = cur.fetchone()
+    conn.close()
+
+    if row is None:
+        await update.message.reply_text(
+            "❌ Пользователь не найден.\n"
+            "Он должен сначала написать боту /start."
+        )
+        return
+
+    user_id, username, paid_credits, generations_count, spent_total = row
+
+    await update.message.reply_text(
+        f"👤 Статистика пользователя:\n\n"
+        f"@{username}\n"
+        f"ID: {user_id}\n\n"
+        f"🎬 Генераций заказал: {generations_count or 0}\n"
+        f"💸 Потратил: {spent_total or 0} ₽\n"
+        f"💰 Текущий баланс: {paid_credits or 0} ₽"
+    )
 async def giveuser(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.message.from_user.id
 
