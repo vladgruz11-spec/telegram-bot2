@@ -893,7 +893,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = query.from_user.id
     action = query.data
 
-        if action == "open_first_instruction":
+    if action == "open_first_instruction":
         try:
             await query.message.delete()
         except Exception:
