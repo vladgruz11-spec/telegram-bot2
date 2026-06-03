@@ -711,7 +711,7 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int, durati
 
 async def send_main_menu_message(message):
     await message.reply_photo(
-        photo=PHOTO_1_URL,
+        photo=MAIN_MENU_PHOTO,
         caption=(
             "🏠 Главное меню\n\n"
             f"1️⃣ Подпишись, чтобы нас не потерять:\n{MAIN_CHANNEL_URL}\n\n"
