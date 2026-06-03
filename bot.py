@@ -886,6 +886,71 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = query.from_user.id
     action = query.data
 
+    if action == "intro_understood":
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+        await query.message.chat.send_message(
+            "📘 Инструкция:\n\n"
+            "1️⃣ Выбери режим генерации.\n"
+            "2️⃣ Отправь фото хорошего качества.\n"
+            "3️⃣ Выбери длительность видео: 5 или 10 секунд.\n"
+            "4️⃣ Дождись результата.\n\n"
+            "⚠️ Важно:\n"
+            "Используй только изображения, на которые у тебя есть права и разрешение.",
+            reply_markup=understood_menu("instruction_understood")
+        )
+        return
+
+    if action == "instruction_understood":
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+        set_instruction_seen(user_id)
+        await send_main_menu_message(query.message)
+        return
+
+    if action == "main_menu":
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+        await send_main_menu_message(query.message)
+        return
+
+    if action == "video_menu":
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+        await query.message.chat.send_animation(
+            animation=GIF_0_URL,
+            caption="🎬 Выбери, что мне сделать с фото:",
+            reply_markup=video_inline_menu()
+        )
+        return
+
+    if action.startswith("style_"):
+        style_id = action.replace("style_", "")
+
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+        await query.message.chat.send_animation(
+            animation=GIF_URLS[style_id],
+            caption=f"🎬 Демонстрация оживления {style_id}",
+            reply_markup=style_action_menu(style_id)
+        )
+        return
+
     if action.startswith("checkpay_"):
         parts = action.split("_")
         payment_id = parts[1]
