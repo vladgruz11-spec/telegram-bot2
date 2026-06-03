@@ -1043,18 +1043,36 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    if action.startswith("style_"):
+        if action.startswith("style_"):
         style_id = action.replace("style_", "")
+        style = STYLE_DATA[style_id]
 
         try:
             await query.message.delete()
         except Exception:
             pass
 
-        await query.message.chat.send_animation(
-            animation=GIF_URLS[style_id],
-            caption=f"🎬 Демонстрация оживления {style_id}",
+        await query.message.chat.send_video(
+            video=style["video"],
+            caption=f"🎬 Демонстрация: {style['title']}",
             reply_markup=style_action_menu(style_id)
+        )
+        return
+
+    if action == "free_style":
+        try:
+            await query.message.delete()
+        except Exception:
+            pass
+
+        await query.message.chat.send_photo(
+            photo=FREE_STYLE_PHOTO,
+            caption=(
+                "🎨 Свободный стиль\n\n"
+                "Опиши своими словами, что ты хочешь увидеть в ролике.\n\n"
+                "⚠️ Чем подробнее описание, тем лучше результат."
+            ),
+            reply_markup=free_style_action_menu()
         )
         return
 
