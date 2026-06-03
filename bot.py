@@ -1104,10 +1104,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     await update.message.reply_text(
-        f"📘 Перед тем как начать, ознакомьтесь с инструкцией!\n\n"
-        f"👉 {INSTRUCTION_URL}",
-        disable_web_page_preview=True,
-        reply_markup=understood_menu("intro_understood")
+        "📘 Перед тем как начать, ознакомьтесь с инструкцией!",
+        reply_markup=first_intro_menu()
     )
 
 
