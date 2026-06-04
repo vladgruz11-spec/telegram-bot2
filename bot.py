@@ -983,40 +983,21 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await query.message.chat.send_message(
             "📘 Инструкция:\n\n"
-            "Бот Xena создает 18+ видео с участием человека, фото которого вы отправите.\n"
+            "Бот Xena создает AI-видео с участием человека, фото которого вы отправите.\n"
             "1. Нажмите СТАРТ.\n"
-            "2. В Главном Меню нажмите кнопку ПОРНО С ДЕВУШКОЙ.\n"
+            "2. В Главном Меню нажмите кнопку 🎬 ВИДЕО.\n"
             "3. Выберите, что хотите увидеть в ролике.\n"
-            "Можете выбрать из списка, либо создать генерацию в СВОБОДНОМ СТИЛЕ.\n"
-            "СВОБОДНЫЙ СТИЛЬ-режим, в котором вы сами пишете, что хотите видеть на экране.\n"
-            "Если выбрали СВОБОДНЫЙ СТИЛЬ, очень подробно и детально составляйте описание, иначе нейросеть может вас не правильно понять, и результат не оправдает ожиданий.\n"
             "4. Выберите длительность видео.\n"
-            "На данный момент доступна длительность 5 и 10 секунд. При большем времени, нейросеть начинает искажать картинку.\n"
-            "Информацию о создании более долгих и качественных роликов вы найдете в нашем закрытом телеграмм-канале. Ссылка в Главном Меню.\n"
-            "5. Если на вашем балансе не хватает средств для генирации, нажмите ПОПОЛНИТЬ БАЛАНС в Главном Меню.\n"
-            "Так же доступна партнерская программа: за каждого, приглашенного пользователя вы можете получать ДЕНЬГИ или БЕСПЛАТНЫЕ генерации, на выбор!\n"
-            "Подробнее смотри Главное Меню-разделы: БЕСПЛАТНЫЕ генерации и ЗАРАБОТАТЬ с Xena.\n"
+            "5. Если на балансе не хватает средств, нажмите 💳 Пополнить баланс.\n"
             "6. Отправьте фото.\n"
-            "7. Дождитесь окончания генерации (обычно, ожидание занимает 2-10 мин., но может затянуться, в зависимости от загруженности сервера).\n"
-            "8. Получите готовый AI-порно ролик с участием девушки с вашего фото!\n"
-            "При возникновении любых вопросов или трудностей, пишите в поддержку.\n"
-            "ВНИМАНИЕ\n"
-            "Нажимая старт, вы соглашаетесь с правилами использования бота, а именно:\n"
-            "а) Запрещается использовать бот для создания с целью РАСПРОСТРАНЕНИЯ контента, нарушающего законодательство или права третьих лиц, включая:\n"
-            "-незаконный контент\n"
-            "-материалы сексуального характера с несовершеннолетними\n"
-            "-экстремизм, терроризм, разжигание ненависти\n"
-            "-мошенничество и введение в заблуждение\n"
-            "-клевету и нарушение репутации\n"
-            "-незаконное использование чужих изображений, лиц или авторских материалов\n"
-            "-материалы, содержащие лгбт\n"
-            "б) Бот является автоматическим инструментом генерации контента. Ответственность за использование результатов несёт пользователь.",
-        
-        reply_markup=understood_menu("instruction_understood")
-    )
+            "7. Дождитесь окончания генерации.\n"
+            "8. Получите готовый AI-ролик.\n\n"
+            "⚠️ Нажимая старт, вы соглашаетесь с правилами использования бота.",
+            reply_markup=understood_menu("instruction_understood")
+        )
         return
 
-    if action == "intro_understood":
+    if action in ["intro_understood", "instruction_understood"]:
         try:
             await query.message.delete()
         except Exception:
@@ -1026,17 +1007,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_main_menu_message(query.message)
         return
 
-    if action == "instruction_understood":
-        try:
-            await query.message.delete()
-        except Exception:
-            pass
-
-        set_instruction_seen(user_id)
-        await send_main_menu_message(query.message)
-        return
-
-    if action == "main_menu":
+    if action == "main_menu" or action == "start":
         try:
             await query.message.delete()
         except Exception:
@@ -1090,60 +1061,12 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=free_style_action_menu()
         )
         return
-        if action.startswith("animate_style_"):
-            style_id = action.replace("animate_style_", "")
-            style = STYLE_DATA[style_id]
-
-            free_used, paid_credits = get_user(user_id)
-
-            if paid_credits < VIDEO_PRICES["5"]:
-                await query.message.reply_text(
-                    "💳 Недостаточно средств для генерации.\n\n"
-                    "👇 Пополни баланс или получи бесплатные генерации 👇",
-                    reply_markup=main_inline_menu()
-                )
-                return
-
-            user_states[user_id] = {
-                "mode": "preset",
-                "style_id": style_id,
-                "prompt": style["prompt"]
-            }
-
-            await query.message.reply_text(
-                "📸 Отправь фото для оживления.\n\n"
-                "<b>Важно:</b> для лучшего результата старайся отправлять фото, как на примере!",
-                parse_mode="HTML"
-            )
-            return
-
-        if action == "animate_free_style":
-            free_used, paid_credits = get_user(user_id)
-
-            if paid_credits < VIDEO_PRICES["5"]:
-                await query.message.reply_text(
-                    "💳 Недостаточно средств для генерации.\n\n"
-                    "👇 Пополни баланс или получи бесплатные генерации 👇",
-                    reply_markup=main_inline_menu()
-                )
-                return
-
-        user_states[user_id] = {
-            "mode": "free_style_wait_photo"
-        }
-
-        await query.message.reply_text(
-            "📸 Отправь фото для оживления.\n\n"
-            "<b>Важно:</b> для лучшего результата старайся отправлять фото, как на примере!",
-            parse_mode="HTML"
-        )
-        return
 
     if action.startswith("animate_style_"):
         style_id = action.replace("animate_style_", "")
         style = STYLE_DATA[style_id]
 
-        free_used, paid_credits = get_user(user_id)
+        _, paid_credits = get_user(user_id)
 
         if paid_credits < VIDEO_PRICES["5"]:
             await query.message.reply_text(
@@ -1165,7 +1088,29 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="HTML"
         )
         return
-    
+
+    if action == "animate_free_style":
+        _, paid_credits = get_user(user_id)
+
+        if paid_credits < VIDEO_PRICES["5"]:
+            await query.message.reply_text(
+                "💳 Недостаточно средств для генерации.\n\n"
+                "👇 Пополни баланс или получи бесплатные генерации 👇",
+                reply_markup=main_inline_menu()
+            )
+            return
+
+        user_states[user_id] = {
+            "mode": "free_style_wait_photo"
+        }
+
+        await query.message.reply_text(
+            "📸 Отправь фото для оживления.\n\n"
+            "<b>Важно:</b> для лучшего результата старайся отправлять фото, как на примере!",
+            parse_mode="HTML"
+        )
+        return
+
     if action.startswith("checkpay_"):
         parts = action.split("_")
         payment_id = parts[1]
@@ -1174,9 +1119,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             paid = check_yookassa_payment(payment_id)
         except Exception as e:
-            await query.message.reply_text(
-                f"❌ Не удалось проверить оплату:\n\n{e}"
-            )
+            await query.message.reply_text(f"❌ Не удалось проверить оплату:\n\n{e}")
             return
 
         if not paid:
@@ -1192,17 +1135,15 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.message.reply_text(
             f"✅ Оплата получена!\n\n"
             f"Баланс пополнен на {amount} ₽.\n"
-            f"Текущий баланс: {paid_credits} ₽.\n\n"
-            f"Теперь отправь картинку."
+            f"Текущий баланс: {paid_credits} ₽."
         )
         return
 
     if action == "buy":
         await query.message.reply_text(
-            "💳 Пополнение баланса:\n\n"
-            "Стоимость генераций:\n"
-            "5 секунд — 98 ₽\n"
-            "10 секунд — 147 ₽\n"
+            "💳 Пополнение баланса\n\n"
+            "🎬 5 секунд — 98 ₽\n"
+            "🎬 10 секунд — 147 ₽\n\n"
             "Выбери сумму пополнения:",
             reply_markup=topup_menu()
         )
@@ -1211,9 +1152,6 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if action == "ref":
         await query.message.reply_text(
             f"🎁 БЕСПЛАТНЫЕ генерации\n\n"
-            f"Приглашай друзей и получай бонусы:\n"
-            f"• друг сделал платный ролик 5 сек — тебе +98 ₽ на баланс\n"
-            f"• друг сделал платный ролик 10 сек — тебе +147 ₽ на баланс\n\n"
             f"Твоя ссылка:\n"
             f"https://t.me/Xena18Bot?start=free_{user_id}"
         )
@@ -1222,9 +1160,6 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if action == "earn":
         await query.message.reply_text(
             f"💸 ЗАРАБОТАТЬ с Xena\n\n"
-            f"Приглашай людей и получай деньги на партнёрский счёт:\n"
-            f"• за платную генерацию 5 сек — 50 ₽\n"
-            f"• за платную генерацию 10 сек — 100 ₽\n\n"
             f"Твоя ссылка:\n"
             f"https://t.me/Xena18Bot?start=money_{user_id}"
         )
@@ -1240,51 +1175,22 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    if action == "start":
-        await send_main_menu_message(query.message)
-        return
-
     if action == "help":
         await query.message.reply_text(
             "📘 Инструкция:\n\n"
-            "Бот Xena создает 18+ видео с участием человека, фото которого вы отправите.\n"
-            "1. Нажмите СТАРТ.\n"
-            "2. В Главном Меню нажмите кнопку ПОРНО С ДЕВУШКОЙ.\n"
-            "3. Выберите, что хотите увидеть в ролике.\n"
-            "Можете выбрать из списка, либо создать генерацию в СВОБОДНОМ СТИЛЕ.\n"
-            "СВОБОДНЫЙ СТИЛЬ-режим, в котором вы сами пишете, что хотите видеть на экране.\n"
-            "Если выбрали СВОБОДНЫЙ СТИЛЬ, очень подробно и детально составляйте описание, иначе нейросеть может вас не правильно понять, и результат не оправдает ожиданий.\n"
-            "4. Выберите длительность видео.\n"
-            "На данный момент доступна длительность 5 и 10 секунд. При большем времени, нейросеть начинает искажать картинку.\n"
-            "Информацию о создании более долгих и качественных роликов вы найдете в нашем закрытом телеграмм-канале. Ссылка в Главном Меню.\n"
-            "5. Если на вашем балансе не хватает средств для генирации, нажмите ПОПОЛНИТЬ БАЛАНС в Главном Меню.\n"
-            "Так же доступна партнерская программа: за каждого, приглашенного пользователя вы можете получать ДЕНЬГИ или БЕСПЛАТНЫЕ генерации, на выбор!\n"
-            "Подробнее смотри Главное Меню-разделы: БЕСПЛАТНЫЕ генерации и ЗАРАБОТАТЬ с Xena.\n"
-            "6. Отправьте фото.\n"
-            "7. Дождитесь окончания генерации (обычно, ожидание занимает 2-10 мин., но может затянуться, в зависимости от загруженности сервера).\n"
-            "8. Получите готовый AI-порно ролик с участием девушки с вашего фото!\n"
-            "При возникновении любых вопросов или трудностей, пишите в поддержку.\n"
-            "ВНИМАНИЕ\n"
-            "Нажимая старт, вы соглашаетесь с правилами использования бота, а именно:\n"
-            "а) Запрещается использовать бот для создания с целью РАСПРОСТРАНЕНИЯ контента, нарушающего законодательство или права третьих лиц, включая:\n"
-            "-незаконный контент\n"
-            "-материалы сексуального характера с несовершеннолетними\n"
-            "-экстремизм, терроризм, разжигание ненависти\n"
-            "-мошенничество и введение в заблуждение\n"
-            "-клевету и нарушение репутации\n"
-            "-незаконное использование чужих изображений, лиц или авторских материалов\n"
-            "-материалы, содержащие лгбт\n"
-            "б) Бот является автоматическим инструментом генерации контента. Ответственность за использование результатов несёт пользователь."
+            "1. Нажми 🎬 ВИДЕО.\n"
+            "2. Выбери стиль.\n"
+            "3. Отправь фото.\n"
+            "4. Выбери длительность.\n"
+            "5. Дождись готового AI-видео."
         )
         return
 
     if action == "profile":
         free_used, paid_credits = get_user(user_id)
-        free_left = max(0, 1 - free_used)
 
         await query.message.reply_text(
             f"👤 Твой баланс:\n\n"
-            f"Бесплатных генераций: {free_left}\n"
             f"Баланс: {paid_credits} ₽\n\n"
             f"Стоимость:\n"
             f"5 секунд — {VIDEO_PRICES['5']} ₽\n"
