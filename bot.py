@@ -1295,7 +1295,10 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     image_path = MEDIA_DIR / f"{user_id}_{photo.file_unique_id}.jpg"
     await file.download_to_drive(str(image_path))
 
-    user_states[user_id] = {"image_path": str(image_path)}
+    if user_id not in user_states:
+        user_states[user_id] = {}
+
+    user_states[user_id]["image_path"] = str(image_path)
 
 
     if paid_credits < VIDEO_PRICES["10"]:
