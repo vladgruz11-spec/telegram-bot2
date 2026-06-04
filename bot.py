@@ -163,19 +163,19 @@ def main_inline_menu():
 def video_inline_menu():
     keyboard = [
         [
-            InlineKeyboardButton("👋 Машет рукой", callback_data="style_wave_hand"),
-            InlineKeyboardButton("🍦 Ест мороженое", callback_data="style_eat_ice_cream"),
+            InlineKeyboardButton("Показывает сиськи 🍊🍊", callback_data="style_wave_hand"),
+            InlineKeyboardButton("Сосет член 👄", callback_data="style_eat_ice_cream"),
         ],
         [
-            InlineKeyboardButton("💃 Танцует", callback_data="style_dance"),
-            InlineKeyboardButton("🤸 Прыгает", callback_data="style_jump"),
+            InlineKeyboardButton("Трахают сзади 🐕", callback_data="style_dance"),
+            InlineKeyboardButton("Между сисек 🍊🍌🍊", callback_data="style_jump"),
         ],
         [
-            InlineKeyboardButton("🪓 Рубит дрова", callback_data="style_chop_wood"),
-            InlineKeyboardButton("🧃 Пьёт сок", callback_data="style_drink_juice"),
+            InlineKeyboardButton("Глубокий минет 🍌", callback_data="style_chop_wood"),
+            InlineKeyboardButton("Кончают на грудь 💦", callback_data="style_drink_juice"),
         ],
         [
-            InlineKeyboardButton("🍎 Ест яблоко", callback_data="style_eat_apple"),
+            InlineKeyboardButton("Кончают в рот 💦", callback_data="style_eat_apple"),
         ],
         [InlineKeyboardButton("🎨 СВОБОДНЫЙ СТИЛЬ", callback_data="free_style")],
         [InlineKeyboardButton("🏠 ГЛАВНОЕ МЕНЮ", callback_data="main_menu")]
