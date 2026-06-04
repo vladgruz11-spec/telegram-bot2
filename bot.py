@@ -1090,24 +1090,46 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=free_style_action_menu()
         )
         return
-    if action.startswith("animate_style_"):
-        style_id = action.replace("animate_style_", "")
-        style = STYLE_DATA[style_id]
+        if action.startswith("animate_style_"):
+            style_id = action.replace("animate_style_", "")
+            style = STYLE_DATA[style_id]
 
-        free_used, paid_credits = get_user(user_id)
+            free_used, paid_credits = get_user(user_id)
 
-    if paid_credits < VIDEO_PRICES["5"]:
-        await query.message.reply_text(
-            "💳 Недостаточно средств для генерации.\n\n"
-            "👇 Пополни баланс или получи бесплатные генерации 👇",
-            reply_markup=main_inline_menu()
-        )
-        return
+            if paid_credits < VIDEO_PRICES["5"]:
+                await query.message.reply_text(
+                    "💳 Недостаточно средств для генерации.\n\n"
+                    "👇 Пополни баланс или получи бесплатные генерации 👇",
+                    reply_markup=main_inline_menu()
+                )
+                return
+
+            user_states[user_id] = {
+                "mode": "preset",
+                "style_id": style_id,
+                "prompt": style["prompt"]
+            }
+
+            await query.message.reply_text(
+                "📸 Отправь фото для оживления.\n\n"
+                "<b>Важно:</b> для лучшего результата старайся отправлять фото, как на примере!",
+                parse_mode="HTML"
+            )
+            return
+
+        if action == "animate_free_style":
+            free_used, paid_credits = get_user(user_id)
+
+            if paid_credits < VIDEO_PRICES["5"]:
+                await query.message.reply_text(
+                    "💳 Недостаточно средств для генерации.\n\n"
+                    "👇 Пополни баланс или получи бесплатные генерации 👇",
+                    reply_markup=main_inline_menu()
+                )
+                return
 
         user_states[user_id] = {
-            "mode": "preset",
-            "style_id": style_id,
-            "prompt": style["prompt"]
+            "mode": "free_style_wait_photo"
         }
 
         await query.message.reply_text(
@@ -1116,28 +1138,6 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="HTML"
         )
         return
-
-    if action == "animate_free_style":
-        free_used, paid_credits = get_user(user_id)
-
-        if paid_credits < VIDEO_PRICES["5"]:
-            await query.message.reply_text(
-                "💳 Недостаточно средств для генерации.\n\n"
-                "👇 Пополни баланс или получи бесплатные генерации 👇",
-                reply_markup=main_inline_menu()
-        )
-        return
-
-    user_states[user_id] = {
-        "mode": "free_style_wait_photo"
-    }
-
-    await query.message.reply_text(
-        "📸 Отправь фото для оживления.\n\n"
-        "<b>Важно:</b> для лучшего результата старайся отправлять фото, как на примере!",
-        parse_mode="HTML"
-    )
-    return
     
     if action.startswith("checkpay_"):
         parts = action.split("_")
