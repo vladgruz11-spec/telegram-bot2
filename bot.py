@@ -148,7 +148,7 @@ MAIN_CHANNEL_URL = "https://t.me/Xena18H"
 
 def main_inline_menu():
     keyboard = [
-        [InlineKeyboardButton("🎬 ВИДЕО", callback_data="video_menu")],
+        [InlineKeyboardButton("🎬 СОЗДАТЬ ПОРНО ВИДЕО", callback_data="video_menu")],
         [InlineKeyboardButton("💳 Пополнить баланс", callback_data="buy")],
         [InlineKeyboardButton("👤 Мой баланс", callback_data="profile")],
         [InlineKeyboardButton("📘 Инструкция", callback_data="help")],
