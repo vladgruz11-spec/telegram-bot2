@@ -1012,7 +1012,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "-материалы, содержащие лгбт\n"
             "б) Бот является автоматическим инструментом генерации контента. Ответственность за использование результатов несёт пользователь."
         )
-            reply_markup=understood_menu("instruction_understood")
+        reply_markup=understood_menu("instruction_understood")
         )
         return
 
