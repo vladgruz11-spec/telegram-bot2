@@ -1011,9 +1011,9 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "-незаконное использование чужих изображений, лиц или авторских материалов\n"
             "-материалы, содержащие лгбт\n"
             "б) Бот является автоматическим инструментом генерации контента. Ответственность за использование результатов несёт пользователь."
-        )
+        
         reply_markup=understood_menu("instruction_understood")
-        )
+    )
         return
 
     if action == "intro_understood":
