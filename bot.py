@@ -1034,6 +1034,14 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_main_menu_message(query.message)
         return
 
+    if action == "back_to_video_menu_no_delete":
+        await query.message.chat.send_photo(
+            photo=DEMO_MENU_PHOTO,
+            caption="🎬 Выбери, что мне сделать с фото:",
+            reply_markup=video_inline_menu()
+        )
+        return
+        
     if action == "video_menu":
         try:
             await query.message.delete()
