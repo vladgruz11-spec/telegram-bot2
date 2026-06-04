@@ -42,31 +42,31 @@ DRINK_JUICE_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-
 EAT_APPLE_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/eat_apple.mp4"
 
 PROMPT_WAVE_HAND = """
-ПРОМТ 1
+машет рукой
 """
 
 PROMPT_EAT_ICE_CREAM = """
-ПРОМТ 2
+ест мороженое
 """
 
 PROMPT_DANCE = """
-ПРОМТ 3
+танцует
 """
 
 PROMPT_JUMP = """
-ПРОМТ 4
+прыгает
 """
 
 PROMPT_CHOP_WOOD = """
-ПРОМТ 5
+рубит дрова
 """
 
 PROMPT_DRINK_JUICE = """
-ПРОМТ 6
+пьет сок
 """
 
 PROMPT_EAT_APPLE = """
-ПРОМТ 7
+ест яблоко
 """
 STYLE_DATA = {
     "wave_hand": {
