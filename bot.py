@@ -1315,7 +1315,98 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=duration_menu()
     )
 
+async def start_generation(update: Update, context: ContextTypes.DEFAULT_TYPE, user_id: int):
+    free_used, paid_credits = get_user(user_id)
 
+    image_path = user_states[user_id]["image_path"]
+    duration = user_states[user_id]["duration"]
+    video_cost = VIDEO_PRICES[duration]
+
+    if paid_credits < video_cost:
+        await update.message.reply_text(
+            f"💰 Баланс: {paid_credits} ₽\n\n"
+            "💳 Недостаточно средств для генерации.\n\n"
+            "👇 Пополни баланс или получи бесплатные генерации 👇",
+            reply_markup=main_inline_menu()
+        )
+        return
+
+    if user_states[user_id].get("mode") == "preset":
+        prompt = user_states[user_id]["prompt"]
+    else:
+        prompt = user_states[user_id]["prompt"]
+
+    await update.message.reply_text(
+        "🎥 Запускаю нейросеть.\n\n"
+        "Генерация видео может занять 2–10 минут. Не отправляй новую картинку, пока я работаю."
+    )
+
+    try:
+        video_path = generate_video_from_image(image_path, prompt, user_id, duration)
+
+        decrement_paid_credit(user_id, video_cost)
+        add_generation_stats(user_id, video_cost)
+        apply_referral_bonus(user_id, duration)
+
+        try:
+            with open(video_path, "rb") as video_file:
+                await update.message.reply_video(
+                    video=video_file,
+                    caption="✅ Готово! Вот твоё AI-видео.",
+                    read_timeout=3600,
+                    write_timeout=3600,
+                    connect_timeout=60,
+                    pool_timeout=3600,
+                    reply_markup=after_generation_menu()
+                )
+        except Exception:
+            await update.message.reply_text(
+                "⚠️ Видео было сгенерировано, но Telegram не смог его отправить.\n\n"
+                "Напиши в поддержку:\n"
+                "https://t.me/Vlad101ss",
+                disable_web_page_preview=True
+            )
+
+        free_used_after, paid_credits_after = get_user(user_id)
+
+        await update.message.reply_text(
+            f"💰 Баланс: {paid_credits_after} ₽"
+        )
+
+        if paid_credits_after <= 0:
+            await update.message.reply_text(
+                "💳 Недостаточно средств для следующей генерации.\n\n"
+                "👇 Пополни баланс или получи бесплатные генерации 👇",
+                reply_markup=main_inline_menu()
+            )
+
+    except Exception as e:
+        import traceback
+        print("GENERATION_ERROR:", repr(e))
+        traceback.print_exc()
+
+        error_text = str(e).lower()
+
+        if (
+            "internal error" in error_text
+            or "try again later" in error_text
+            or "kie не смог" in error_text
+            or "timeout" in error_text
+        ):
+            await update.message.reply_text(
+                "⚠️ Нейросеть временно перегружена или не смогла обработать запрос.\n\n"
+                "Попробуй ещё раз через 1–2 минуты или выбери другой стиль."
+            )
+        else:
+            await update.message.reply_text(
+                "❌ Произошла ошибка генерации.\n\n"
+                "Если проблема повторяется — напиши в поддержку:\n"
+                "https://t.me/Vlad101ss",
+                disable_web_page_preview=True
+            )
+
+    user_states.pop(user_id, None)
+    
 async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     prompt = update.message.text
