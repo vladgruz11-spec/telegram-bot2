@@ -216,7 +216,7 @@ def understood_menu(callback_data: str):
 
 def after_generation_menu():
     keyboard = [
-        [InlineKeyboardButton("🏠 Главное меню", callback_data="main_menu")]
+        [InlineKeyboardButton("⬅️ НАЗАД", callback_data="back_to_video_menu_no_delete")]
     ]
     return InlineKeyboardMarkup(keyboard)
 
