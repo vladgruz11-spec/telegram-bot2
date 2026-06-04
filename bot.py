@@ -1310,9 +1310,9 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     await update.message.reply_text(
-        "✅ Картинку получил.\n\n"
-        "Выбери длительность видео:",
-        reply_markup=duration_menu()
+        "✅ Фото получил.\n\n"
+        "⏱ Выбери длительность видео:",
+        reply_markup=duration_menu_5_only()
     )
 
 
