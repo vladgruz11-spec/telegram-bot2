@@ -143,7 +143,7 @@ VIDEO_PRICES = {
 }
 
 
-EXAMPLES_CHANNEL_URL = "ССЫЛКА_НА_КАНАЛ_С_ПРИМЕРАМИ"
+EXAMPLES_CHANNEL_URL = "https://t.me/+CScI2LQknNxlY2Rj"
 MAIN_CHANNEL_URL = "https://t.me/Xena18H"
 
 def main_inline_menu():
@@ -768,7 +768,7 @@ async def send_main_menu_message(message):
         photo=MAIN_MENU_PHOTO,
         caption=(
             f"1️⃣ Подпишись на канал:\n{MAIN_CHANNEL_URL} чтобы нас не потерять, если бота заблокируют!\n\n"
-            f"2️⃣ Примеры генераций:\n{https://t.me/+CScI2LQknNxlY2Ri}"
+            f"2️⃣ Примеры генераций:\n{EXAMPLES_CHANNEL_URL}"
         ),
         reply_markup=main_inline_menu()
     )
