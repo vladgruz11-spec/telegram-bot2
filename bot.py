@@ -1118,7 +1118,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if action == "animate_free_style":
-    free_used, paid_credits = get_user(user_id)
+        free_used, paid_credits = get_user(user_id)
 
         if paid_credits < VIDEO_PRICES["5"]:
             await query.message.reply_text(
