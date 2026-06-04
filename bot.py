@@ -1423,7 +1423,14 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         user_states[user_id]["duration"] = selected_duration
 
-        await update.message.reply_text("✍️ Теперь отправь описание видео.")
+        if user_states[user_id].get("mode") == "preset":
+            await start_generation(update, context, user_id)
+            return
+
+        await update.message.reply_text(
+            "✍️ Теперь отправь описание видео.\n\n"
+            "Чем подробнее описание, тем лучше результат."
+        )
         return
 
     if user_id not in user_states:
