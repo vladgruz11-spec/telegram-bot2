@@ -611,6 +611,34 @@ def add_generation_stats(user_id: int, cost: int):
 
     conn.commit()
     conn.close()
+
+    def save_active_generation(user_id: int, task_id: str, video_cost: int, duration: str):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        INSERT INTO active_generations (user_id, task_id, video_cost, duration, status, created_at)
+        VALUES (?, ?, ?, ?, 'waiting', ?)
+        """,
+        (user_id, task_id, video_cost, duration, int(time.time()))
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def finish_active_generation(task_id: str):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "UPDATE active_generations SET status = 'done' WHERE task_id = ?",
+        (task_id,)
+    )
+
+    conn.commit()
+    conn.close()
     
 def increment_free_used(user_id: int):
     conn = sqlite3.connect(DB_PATH)
