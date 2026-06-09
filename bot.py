@@ -612,7 +612,7 @@ def add_generation_stats(user_id: int, cost: int):
     conn.commit()
     conn.close()
 
-    def save_active_generation(user_id: int, task_id: str, video_cost: int, duration: str):
+def save_active_generation(user_id: int, task_id: str, video_cost: int, duration: str):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
@@ -1435,6 +1435,9 @@ async def start_generation(update: Update, context: ContextTypes.DEFAULT_TYPE, u
         task_id = create_kie_video_task(image_url, prompt, duration)
 
         print(f"GENERATION: Kie accepted task {task_id}. Charging user.", flush=True)
+
+        save_active_generation(user_id, task_id, video_cost, duration)
+
         decrement_paid_credit(user_id, video_cost)
         add_generation_stats(user_id, video_cost)
         apply_referral_bonus(user_id, duration)
@@ -1672,6 +1675,9 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         task_id = create_kie_video_task(image_url, prompt, duration)
 
         print(f"GENERATION: Kie accepted task {task_id}. Charging user.", flush=True)
+
+        save_active_generation(user_id, task_id, video_cost, duration)
+
         decrement_paid_credit(user_id, video_cost)
         add_generation_stats(user_id, video_cost)
         apply_referral_bonus(user_id, duration)
