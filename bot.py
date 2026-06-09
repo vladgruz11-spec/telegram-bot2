@@ -220,6 +220,13 @@ def after_generation_menu():
     ]
     return InlineKeyboardMarkup(keyboard)
 
+def not_enough_balance_menu():
+    keyboard = [
+        [InlineKeyboardButton("💳 Пополнить баланс", callback_data="buy")],
+        [InlineKeyboardButton("🎁 БЕСПЛАТНЫЕ генерации", callback_data="ref")]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
 def paid_menu():
     keyboard = [
         ["💳 Пополнить баланс: /buy"],
