@@ -1569,8 +1569,12 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     if user_id not in user_states:
-        await update.message.reply_text("Сначала отправь картинку.")
-        return
+        await update.message.reply_photo(
+            photo=DEMO_MENU_PHOTO,
+            caption="🎬 Выбери, что мне сделать с фото:",
+            reply_markup=video_inline_menu()
+        )
+    return
 
     if "duration" not in user_states[user_id]:
         await update.message.reply_text(
