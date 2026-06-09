@@ -316,6 +316,18 @@ def init_db():
         )
     """)
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS active_generations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            task_id TEXT,
+            video_cost INTEGER,
+            duration TEXT,
+            status TEXT DEFAULT 'waiting',
+            created_at INTEGER
+        )
+    """)
+
     try:
         cur.execute("ALTER TABLE users ADD COLUMN username TEXT")
     except sqlite3.OperationalError:
