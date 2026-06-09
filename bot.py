@@ -1374,11 +1374,22 @@ async def start_generation(update: Update, context: ContextTypes.DEFAULT_TYPE, u
     )
 
     try:
-        video_path = generate_video_from_image(image_path, prompt, user_id, duration)
+        print("GENERATION: upload image", flush=True)
+        image_url = upload_image_to_kie(image_path)
 
+        print("GENERATION: create Kie task", flush=True)
+        task_id = create_kie_video_task(image_url, prompt, duration)
+
+        print(f"GENERATION: Kie accepted task {task_id}. Charging user.", flush=True)
         decrement_paid_credit(user_id, video_cost)
         add_generation_stats(user_id, video_cost)
         apply_referral_bonus(user_id, duration)
+
+        print(f"GENERATION: wait result {task_id}", flush=True)
+        video_url = wait_kie_video_result(task_id)
+
+        print(f"GENERATION: download video {video_url}", flush=True)
+        video_path = download_video(video_url, user_id)
 
         try:
             with open(video_path, "rb") as video_file:
