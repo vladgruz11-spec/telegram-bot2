@@ -1126,6 +1126,9 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "prompt": style["prompt"]
         }
 
+        print(f"STYLE_SELECTED: {user_id} -> {style_id}", flush=True)
+        print(f"USER_STATE_AFTER_SELECT: {user_states.get(user_id)}", flush=True)
+
         await query.message.reply_text(
             "📸 Отправь фото для оживления.\n\n"
             "<b>Важно:</b> для лучшего результата старайся отправлять фото, как на примере!",
