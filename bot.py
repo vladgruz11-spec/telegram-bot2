@@ -1295,6 +1295,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
 
+    print(f"PHOTO_RECEIVED from user {user_id}", flush=True)
+    print(f"USER_STATE: {user_states.get(user_id)}", flush=True)
+
     free_used, paid_credits = get_user(user_id)
 
     if user_id not in user_states:
