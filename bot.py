@@ -770,6 +770,8 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int, durati
     print("STEP 2: create Kie task", flush=True)
     task_id = create_kie_video_task(image_url, prompt, duration)
 
+    print(f"STEP 2.5: Kie task created, task_id={task_id}", flush=True)
+
     print(f"STEP 3: wait Kie result, task_id={task_id}", flush=True)
     video_url = wait_kie_video_result(task_id)
 
