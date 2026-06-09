@@ -1297,6 +1297,14 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     free_used, paid_credits = get_user(user_id)
 
+    if user_id not in user_states:
+        await update.message.reply_photo(
+            photo=DEMO_MENU_PHOTO,
+            caption="🎬 Выбери, что мне сделать с фото:",
+            reply_markup=video_inline_menu()
+        )
+    return
+
     if paid_credits < VIDEO_PRICES["5"]:
         await update.message.reply_text(
             "💳Недостаточно средств для генерации.\n\n"
