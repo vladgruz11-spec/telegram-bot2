@@ -1175,6 +1175,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if action == "buy":
         await query.message.reply_text(
             "💳 Пополнение баланса\n\n"
+            "Стоимость генераций:\n"
             "🎬 5 секунд — 98 ₽\n"
             "🎬 10 секунд — 147 ₽\n\n"
             "Выбери сумму пополнения:",
@@ -1454,7 +1455,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"💳 Пополнение баланса на {amount} ₽\n\n"
             f"1. Нажми «Оплатить»\n"
             f"2. После оплаты вернись сюда\n"
-            f"3. Нажми «✅ Проверить оплату»",
+            f"3. Нажми «✅ Проверить оплату»"\n\n"
+            f"Если не открывается ссылка, отключите VPN на время оплаты",
             reply_markup=keyboard
         )
         return
