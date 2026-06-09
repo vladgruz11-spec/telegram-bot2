@@ -764,10 +764,19 @@ def create_yookassa_payment(user_id: int, amount: int) -> str:
 
     return result["confirmation"]["confirmation_url"], result["id"]
 def generate_video_from_image(image_path: str, prompt: str, user_id: int, duration: str) -> str:
+    print("STEP 1: upload image to Kie", flush=True)
     image_url = upload_image_to_kie(image_path)
+
+    print("STEP 2: create Kie task", flush=True)
     task_id = create_kie_video_task(image_url, prompt, duration)
+
+    print(f"STEP 3: wait Kie result, task_id={task_id}", flush=True)
     video_url = wait_kie_video_result(task_id)
+
+    print(f"STEP 4: download video: {video_url}", flush=True)
     video_path = download_video(video_url, user_id)
+
+    print(f"STEP 5: video downloaded: {video_path}", flush=True)
     return video_path
 
 async def send_main_menu_message(message):
