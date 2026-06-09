@@ -1448,6 +1448,8 @@ async def start_generation(update: Update, context: ContextTypes.DEFAULT_TYPE, u
         print(f"GENERATION: download video {video_url}", flush=True)
         video_path = download_video(video_url, user_id)
 
+        finish_active_generation(task_id)
+
         try:
             with open(video_path, "rb") as video_file:
                 await update.message.reply_video(
@@ -1687,6 +1689,8 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         print(f"GENERATION: download video {video_url}", flush=True)
         video_path = download_video(video_url, user_id)
+
+        finish_active_generation(task_id)
 
         try:
             with open(video_path, "rb") as video_file:
