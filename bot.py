@@ -1716,6 +1716,7 @@ async def precheckout_callback(update: Update, context: ContextTypes.DEFAULT_TYP
 
 async def successful_payment_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
+    user_states.pop(user_id, None)
     payload = update.message.successful_payment.invoice_payload
 
     if payload.startswith("topup_"):
