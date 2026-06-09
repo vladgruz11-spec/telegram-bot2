@@ -1455,7 +1455,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             f"💳 Пополнение баланса на {amount} ₽\n\n"
             f"1. Нажми «Оплатить»\n"
             f"2. После оплаты вернись сюда\n"
-            f"3. Нажми «✅ Проверить оплату»\n\n"
+            f"3. Нажми «✅ Проверить оплату»\n"
             f"Если не открывается ссылка, отключите VPN на время оплаты",
             reply_markup=keyboard
         )
