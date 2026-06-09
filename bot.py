@@ -1105,7 +1105,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.message.reply_text(
                 "💳 Недостаточно средств для генерации.\n\n"
                 "👇 Пополни баланс или получи бесплатные генерации 👇",
-                reply_markup=main_inline_menu()
+                reply_markup=not_enough_balance_menu()
             )
             return
 
@@ -1129,7 +1129,7 @@ async def menu_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.message.reply_text(
                 "💳 Недостаточно средств для генерации.\n\n"
                 "👇 Пополни баланс или получи бесплатные генерации 👇",
-                reply_markup=main_inline_menu()
+                reply_markup=not_enough_balance_menu()
             )
             return
 
@@ -1347,7 +1347,7 @@ async def start_generation(update: Update, context: ContextTypes.DEFAULT_TYPE, u
             f"💰 Баланс: {paid_credits} ₽\n\n"
             "💳 Недостаточно средств для генерации.\n\n"
             "👇 Пополни баланс или получи бесплатные генерации 👇",
-            reply_markup=main_inline_menu()
+            reply_markup=not_enough_balance_menu()
         )
         return
 
@@ -1397,7 +1397,7 @@ async def start_generation(update: Update, context: ContextTypes.DEFAULT_TYPE, u
             await update.message.reply_text(
                 "💳 Недостаточно средств для следующей генерации.\n\n"
                 "👇 Пополни баланс или получи бесплатные генерации 👇",
-                reply_markup=main_inline_menu()
+                reply_markup=not_enough_balance_menu()
             )
 
     except Exception as e:
