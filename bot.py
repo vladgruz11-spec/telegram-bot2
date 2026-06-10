@@ -1613,7 +1613,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
             caption="🎬 Выбери, что мне сделать с фото:",
             reply_markup=video_inline_menu()
         )
-    return
+        return
 
     if "duration" not in user_states[user_id]:
         await update.message.reply_text(
