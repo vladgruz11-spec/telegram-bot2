@@ -1624,25 +1624,25 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     free_used, paid_credits = get_user(user_id)
 
-    image_path = user_states[user_id]["image_path"]
-    duration = user_states[user_id]["duration"]
-    video_cost = VIDEO_PRICES[duration]
+image_path = user_states[user_id]["image_path"]
+duration = user_states[user_id]["duration"]
+video_cost = VIDEO_PRICES[duration]
 
-    if free_used >= 1 and paid_credits < video_cost:
+    if paid_credits < video_cost:
         await update.message.reply_text(
-            f"Баланс: {paid_credits} ₽"
-        )
-
-        await update.message.reply_text(
-            "💳Недостаточно средств для генерации.\n\n"
-            "👇Пополнить баланс или получить БЕСПЛАТНО👇"
-        )
-
-        await update.message.reply_text(
-            "Меню бота",
-            reply_markup=inline_menu()
+            f"💰 Баланс: {paid_credits} ₽\n\n"
+            "💳 Недостаточно средств для генерации.\n\n"
+            "👇 Пополни баланс или получи бесплатные генерации 👇",
+            reply_markup=not_enough_balance_menu()
         )
         return
+
+    user_states[user_id]["prompt"] = prompt
+
+    print("FREE_STYLE_START_GENERATION", flush=True)
+
+    await start_generation(update, context, user_id)
+    return
 
     await update.message.reply_text(
         "🎥 Запускаю нейросеть.\n\n"
