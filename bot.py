@@ -1343,7 +1343,7 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     free_used, paid_credits = get_user(user_id)
 
-    if user_id not in user_states:
+    if user_id not in user_states or user_states[user_id].get("mode") not in ["preset", "free_style_wait_photo"]:
         await update.message.reply_photo(
             photo=DEMO_MENU_PHOTO,
             caption="🎬 Выбери, что мне сделать с фото:",
@@ -1353,25 +1353,9 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if paid_credits < VIDEO_PRICES["5"]:
         await update.message.reply_text(
-            "💳Недостаточно средств для генерации.\n\n"
-            "👇Пополнить баланс или получить БЕСПЛАТНО👇"
-        )
-
-        await update.message.reply_text(
-            "Меню бота",
-            reply_markup=inline_menu()
-        )
-        return
-
-    if free_used >= 1 and paid_credits < VIDEO_PRICES["5"]:
-        await update.message.reply_text(
-            "💳Недостаточно средств для генерации.\n\n"
-            "👇Пополнить баланс или получить БЕСПЛАТНО👇"
-        )
-
-        await update.message.reply_text(
-            "Меню бота",
-            reply_markup=inline_menu()
+            "💳 Недостаточно средств для генерации.\n\n"
+            "👇 Пополни баланс или получи бесплатные генерации 👇",
+            reply_markup=not_enough_balance_menu()
         )
         return
 
@@ -1381,16 +1365,12 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     image_path = MEDIA_DIR / f"{user_id}_{photo.file_unique_id}.jpg"
     await file.download_to_drive(str(image_path))
 
-    if user_id not in user_states:
-        user_states[user_id] = {}
-
     user_states[user_id]["image_path"] = str(image_path)
-
 
     if paid_credits < VIDEO_PRICES["10"]:
         await update.message.reply_text(
-            "✅ Картинку получил.\n\n"
-            "Выбери длительность видео:",
+            "✅ Фото получил.\n\n"
+            "⏱ Выбери длительность видео:",
             reply_markup=duration_menu_5_only()
         )
         return
