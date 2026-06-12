@@ -190,6 +190,7 @@ def video_inline_menu():
         ],
         [
             InlineKeyboardButton("Кончают в рот 💦", callback_data="style_eat_apple"),
+            InlineKeyboardButton("Трахают сзади 🦞", callback_data="style_juggle"),
         ],
         [InlineKeyboardButton("🎨 СВОБОДНЫЙ СТИЛЬ", callback_data="free_style")],
         [InlineKeyboardButton("🏠 ГЛАВНОЕ МЕНЮ", callback_data="main_menu")]
