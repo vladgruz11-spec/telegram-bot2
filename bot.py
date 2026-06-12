@@ -118,6 +118,13 @@ STYLE_DATA = {
         "video": EAT_APPLE_VIDEO,
         "prompt": PROMPT_EAT_APPLE
     },
+
+    "juggle": {
+        "title": "Трахают сзади",
+        "button": "Трахают сзади 🦞",
+        "video": JUGGLE_VIDEO,
+        "prompt": PROMPT_JUGGLE
+    },
 }
 
 YOOKASSA_SHOP_ID = os.getenv("YOOKASSA_SHOP_ID")
