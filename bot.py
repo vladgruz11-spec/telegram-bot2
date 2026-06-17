@@ -30,6 +30,14 @@ DEMO_MENU_PHOTO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bo
 
 FREE_STYLE_PHOTO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/free_style.jpg"
 
+PROMO_VIDEOS = [
+    "https://tempfileb.aiquickdraw.com/kieai/market/1781718331040_lKh0aCyc.mp4",
+    "https://tempfileb.aiquickdraw.com/kieai/market/1781718377475_Pw22mXcX.mp4",
+    "https://tempfileb.aiquickdraw.com/kieai/market/1781718425348_lsD1Tv4C.mp4",
+    "https://tempfileb.aiquickdraw.com/kieai/market/1781718468469_gtx6IUHs.mp4",
+    "https://tempfileb.aiquickdraw.com/kieai/market/1781718523506_D2uW5YeY.mp4",
+]
+
 
 WAVE_HAND_VIDEO = "https://raw.githubusercontent.com/vladgruz11-spec/telegram-bot2/main/assets/wave_hand.mp4"
 
