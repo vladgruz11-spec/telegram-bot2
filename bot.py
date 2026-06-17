@@ -957,8 +957,8 @@ async def send_main_menu_message(message):
     await message.reply_photo(
         photo=MAIN_MENU_PHOTO,
         caption=(
-            f"1️⃣ Подпишись на канал:\n{MAIN_CHANNEL_URL} чтобы нас не потерять, если бота заблокируют!\n\n"
-            f"2️⃣ Примеры генераций:\n{EXAMPLES_CHANNEL_URL}"
+            f"1️⃣ Примеры генераций с иностранными звездными шалавами:\n{MAIN_CHANNEL_URL}\n\n"
+            f"2️⃣ Закрытый канал с НАШИМИ девченками 😈:\n{EXAMPLES_CHANNEL_URL}"
         ),
         reply_markup=main_inline_menu()
     )
