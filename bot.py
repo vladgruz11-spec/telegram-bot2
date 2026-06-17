@@ -855,6 +855,104 @@ def generate_video_from_image(image_path: str, prompt: str, user_id: int, durati
     print(f"STEP 5: video downloaded: {video_path}", flush=True)
     return video_path
 
+def get_all_user_ids():
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute("SELECT user_id FROM users")
+    users = [row[0] for row in cur.fetchall()]
+
+    conn.close()
+    return users
+
+
+def get_bot_setting(key: str):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute("SELECT value FROM bot_settings WHERE key = ?", (key,))
+    row = cur.fetchone()
+
+    conn.close()
+    return row[0] if row else None
+
+
+def set_bot_setting(key: str, value: str):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute(
+        "INSERT OR REPLACE INTO bot_settings (key, value) VALUES (?, ?)",
+        (key, value)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def promo_video_button():
+    return InlineKeyboardMarkup([
+        [InlineKeyboardButton("🎬 ПОРНО С ДЕВУШКОЙ", callback_data="video_menu")]
+    ])
+
+
+async def send_promo_to_all_users(application):
+    users = get_all_user_ids()
+    video = random.choice(PROMO_VIDEOS)
+
+    caption = (
+        "🔞 Они готовы принять твой камшот прямо сейчас!\n\n"
+        "Чего же ты ждешь? Действуй!"
+    )
+
+    sent = 0
+    failed = 0
+
+    for user_id in users:
+        try:
+            await application.bot.send_video(
+                chat_id=user_id,
+                video=video,
+                caption=caption,
+                reply_markup=promo_video_button()
+            )
+            sent += 1
+            await asyncio.sleep(0.1)
+        except Exception as e:
+            print(f"PROMO_SEND_FAILED user_id={user_id}: {repr(e)}", flush=True)
+            failed += 1
+
+    print(f"PROMO_SENT: sent={sent}, failed={failed}", flush=True)
+
+
+async def promo_scheduler(application):
+    moscow_tz = ZoneInfo("Europe/Moscow")
+
+    while True:
+        now = datetime.now(moscow_tz)
+        last_sent = get_bot_setting("last_promo_sent")
+
+        should_send = False
+
+        if now.hour == 22 and now.minute == 0:
+            if not last_sent:
+                should_send = True
+            else:
+                last_dt = datetime.fromisoformat(last_sent)
+                if now - last_dt >= timedelta(days=3):
+                    should_send = True
+
+        if should_send:
+            print("PROMO_SCHEDULER: sending promo", flush=True)
+            await send_promo_to_all_users(application)
+            set_bot_setting("last_promo_sent", now.isoformat())
+
+        await asyncio.sleep(60)
+
+
+async def post_init(application):
+    application.create_task(promo_scheduler(application))
+
 async def send_main_menu_message(message):
     await message.reply_photo(
         photo=MAIN_MENU_PHOTO,
