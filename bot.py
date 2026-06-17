@@ -355,6 +355,13 @@ def init_db():
         )
     """)
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS bot_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )
+    """)
+
     try:
         cur.execute("ALTER TABLE users ADD COLUMN username TEXT")
     except sqlite3.OperationalError:
