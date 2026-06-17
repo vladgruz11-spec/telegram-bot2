@@ -1909,6 +1909,7 @@ def main():
     .read_timeout(3600)
     .write_timeout(3600)
     .pool_timeout(3600)
+    .post_init(post_init)
     .build()
 )
 
