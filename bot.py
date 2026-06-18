@@ -169,6 +169,7 @@ VIDEO_PRICES = {
 }
 
 
+
 EXAMPLES_CHANNEL_URL = "https://t.me/+qukafJOw1y8zZGMy"
 MAIN_CHANNEL_URL = "https://t.me/Xena18H"
 
