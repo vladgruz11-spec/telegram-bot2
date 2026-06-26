@@ -80,7 +80,7 @@ PROMPT_DRINK_JUICE = """
 """
 
 PROMPT_EAT_APPLE = """
-Она становится на колени, открывает рот. Мужчина дрочит свой член рукой и кончает ей в рот и на лицо полупрозрачной спермой из своего члена- это Cumshot.  В видео не должно быть музыки. Мужской член должен выглядеть натурально, правдоподобно и естественно. Должны быть только звуки дрочки члена, и стоны мужчины. Натуральное тело, обнаженная кожа, реалистичная анатомия, детализированная текстура кожи, фотореалистичная
+Она становится на колени, открывает рот. Мужчина дрочит свой член рукой и кончает ей в рот и на лицо полупрозрачной спермой из своего члена- это Cumshot.  В видео не должно быть музыки. Мужской член должен выглядеть натурально, правдоподобно и естественно. Должны быть только звуки дрочки члена, и стоны мужчины. Натуральное тело, обнаженная кожа, реалистичная анатомия, детализированная текстура кожи, фотореалистичная
 """
 
 PROMPT_JUGGLE = """
@@ -167,7 +167,6 @@ VIDEO_PRICES = {
     "5": 98,
     "10": 147,
 }
-
 
 
 EXAMPLES_CHANNEL_URL = "https://t.me/+qukafJOw1y8zZGMy"
@@ -1461,9 +1460,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_main_menu_message(update.message)
         return
 
-async def id_command(update, context):
-    await update.message.reply_text(f"Ваш chat_id:\n{update.effective_chat.id}")
-
     await update.message.reply_photo(
         photo=INSTRUCTION_PHOTO,
         caption="📘 Перед тем как начать, ознакомьтесь с инструкцией!",
@@ -1931,8 +1927,7 @@ def main():
     app.add_handler(MessageHandler(filters.SUCCESSFUL_PAYMENT, successful_payment_callback))
     app.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
-    app.add_handler(CommandHandler("id", id_command))
-    
+
     print("Бот запущен...")
     app.run_polling()
 
