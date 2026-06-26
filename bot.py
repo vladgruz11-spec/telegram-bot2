@@ -1461,6 +1461,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await send_main_menu_message(update.message)
         return
 
+async def id_command(update, context):
+    await update.message.reply_text(f"Ваш chat_id:\n{update.effective_chat.id}")
+
     await update.message.reply_photo(
         photo=INSTRUCTION_PHOTO,
         caption="📘 Перед тем как начать, ознакомьтесь с инструкцией!",
