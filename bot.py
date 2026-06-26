@@ -1,6 +1,3 @@
-async def id(update, context):
-    await update.message.reply_text(str(update.effective_chat.id))
-
 import os
 import json
 import time
